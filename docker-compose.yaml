@@ -1,0 +1,37 @@
+# ToDo - check version
+
+services:
+  dbdata:
+    container_name: dbdata_cnt
+    build: ./datasrv
+    image: epi_dbdata:latest
+    restart: always
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+    - db-data:/var/lib/postgresql/data
+    ports:
+    - "5432:5432"
+ 
+  pgadmin:
+    container_name: dbadminer_cnt
+    build: ./dbadminer
+    image: epi_dbadminer:latest
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: secret
+      PGADMIN_LISTEN_PORT: 81
+    ports:
+    - "8081:81"
+    volumes:
+    - pgadmin-data:/var/lib/pgadmin
+    links:
+    - "dbdata:pgsql-server"
+
+volumes:
+  db-data:
+  pgadmin-data:
