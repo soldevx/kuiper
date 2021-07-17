@@ -7,6 +7,8 @@ import (
 	"github.com/soldevx/kuiper/andro/pkg/utl/jwt"
 
 	"github.com/stretchr/testify/assert"
+
+	andro "github.com/soldevx/kuiper/andro/pkg/utl/model"
 )
 
 func TestGenerateToken(t *testing.T) {

@@ -5,6 +5,8 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
+
+	andro "github.com/soldevx/kuiper/andro/pkg/utl/model"
 )
 
 // TokenParser represents JWT token parser

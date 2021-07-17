@@ -6,6 +6,8 @@ import (
 	"github.com/labstack/echo"
 
 	"github.com/soldevx/kuiper/andro/pkg/api/auth"
+
+	andro "github.com/soldevx/kuiper/andro/pkg/utl/model"
 )
 
 // New creates new auth logging service

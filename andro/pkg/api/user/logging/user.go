@@ -5,6 +5,8 @@ import (
 
 	"github.com/labstack/echo"
 
+	andro "github.com/soldevx/kuiper/andro/pkg/utl/model"
+
 	"github.com/soldevx/kuiper/andro/pkg/api/user"
 )
 

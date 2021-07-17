@@ -8,6 +8,8 @@ import (
 
 	"github.com/soldevx/kuiper/andro/pkg/api/user/platform/pgsql"
 	"github.com/soldevx/kuiper/andro/pkg/utl/mock"
+
+	andro "github.com/soldevx/kuiper/andro/pkg/utl/model"
 )
 
 func TestCreate(t *testing.T) {

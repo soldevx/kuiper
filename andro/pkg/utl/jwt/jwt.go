@@ -6,6 +6,8 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+
+	andro "github.com/soldevx/kuiper/andro/pkg/utl/model"
 )
 
 var minSecretLen = 128

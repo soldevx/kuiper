@@ -1,5 +1,9 @@
 package transport
 
+import (
+	andro "github.com/soldevx/kuiper/andro/pkg/utl/model"
+)
+
 // Login request
 // swagger:parameters login
 type swaggLoginReq struct {

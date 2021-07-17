@@ -1,5 +1,9 @@
 package transport
 
+import (
+	andro "github.com/soldevx/kuiper/andro/pkg/utl/model"
+)
+
 // User model response
 // swagger:response userResp
 type swaggUserResponse struct {

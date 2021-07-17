@@ -6,6 +6,8 @@ import (
 	"github.com/labstack/echo"
 
 	"github.com/soldevx/kuiper/andro/pkg/api/user/platform/pgsql"
+
+	andro "github.com/soldevx/kuiper/andro/pkg/utl/model"
 )
 
 // Service represents user application interface

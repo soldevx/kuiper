@@ -10,8 +10,8 @@
   ],
   "swagger": "2.0",
   "info": {
-    "description": "API Docs for KUIPER v1",
-    "title": "KUIPER - Go(lang) restful api",
+    "description": "API Docs for KUIPER-ANDRO v1",
+    "title": "KUIPER-ANDRO - Go(lang) restful api",
     "contact": {
       "name": "No Name",
       "url": "https://www.google.com",

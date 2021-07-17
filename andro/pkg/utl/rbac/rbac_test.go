@@ -9,6 +9,8 @@ import (
 	"github.com/labstack/echo"
 
 	"github.com/stretchr/testify/assert"
+
+	andro "github.com/soldevx/kuiper/andro/pkg/utl/model"
 )
 
 func TestUser(t *testing.T) {

@@ -8,6 +8,8 @@ import (
 	"github.com/soldevx/kuiper/andro/pkg/api/auth/platform/pgsql"
 
 	"github.com/stretchr/testify/assert"
+
+	andro "github.com/soldevx/kuiper/andro/pkg/utl/model"
 )
 
 func TestView(t *testing.T) {

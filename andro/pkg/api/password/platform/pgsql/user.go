@@ -2,6 +2,8 @@ package pgsql
 
 import (
 	"github.com/go-pg/pg/v9/orm"
+
+	andro "github.com/soldevx/kuiper/andro/pkg/utl/model"
 )
 
 // User represents the client for user table

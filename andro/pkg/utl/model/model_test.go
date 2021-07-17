@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/soldevx/kuiper/andro/pkg/utl/mock"
+	andro "github.com/soldevx/kuiper/andro/pkg/utl/model"
 )
 
 func TestBeforeInsert(t *testing.T) {

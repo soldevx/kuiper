@@ -11,6 +11,8 @@ import (
 	"github.com/soldevx/kuiper/andro/pkg/utl/mock/mockdb"
 
 	"github.com/stretchr/testify/assert"
+
+	andro "github.com/soldevx/kuiper/andro/pkg/utl/model"
 )
 
 func TestAuthenticate(t *testing.T) {

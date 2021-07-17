@@ -10,6 +10,8 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/soldevx/kuiper/andro/pkg/utl/middleware/auth"
+
+	andro "github.com/soldevx/kuiper/andro/pkg/utl/model"
 )
 
 func echoHandler(mw ...echo.MiddlewareFunc) *echo.Echo {

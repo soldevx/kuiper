@@ -7,6 +7,8 @@ import (
 
 	"github.com/soldevx/kuiper/andro/pkg/api/password/platform/pgsql"
 	"github.com/soldevx/kuiper/andro/pkg/utl/mock"
+
+	andro "github.com/soldevx/kuiper/andro/pkg/utl/model"
 )
 
 func TestView(t *testing.T) {

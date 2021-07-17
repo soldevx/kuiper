@@ -2,6 +2,8 @@ package mockdb
 
 import (
 	"github.com/go-pg/pg/v9/orm"
+
+	andro "github.com/soldevx/kuiper/andro/pkg/utl/model"
 )
 
 // User database mock

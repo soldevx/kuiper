@@ -7,6 +7,8 @@ import (
 	"github.com/soldevx/kuiper/andro/pkg/api/user"
 
 	"github.com/labstack/echo"
+
+	andro "github.com/soldevx/kuiper/andro/pkg/utl/model"
 )
 
 // HTTP represents user http service
