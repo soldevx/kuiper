@@ -5,12 +5,11 @@ import (
 
 	"github.com/labstack/echo"
 
-	kuiper "github.com/soldevx/kuiper/kuipersrv"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/api/auth"
+	"github.com/soldevx/kuiper/andro/pkg/api/auth"
 )
 
 // New creates new auth logging service
-func New(svc auth.Service, logger kuiper.Logger) *LogService {
+func New(svc auth.Service, logger andro.Logger) *LogService {
 	return &LogService{
 		Service: svc,
 		logger:  logger,
@@ -20,13 +19,13 @@ func New(svc auth.Service, logger kuiper.Logger) *LogService {
 // LogService represents auth logging service
 type LogService struct {
 	auth.Service
-	logger kuiper.Logger
+	logger andro.Logger
 }
 
 const name = "auth"
 
 // Authenticate logging
-func (ls *LogService) Authenticate(c echo.Context, user, password string) (resp kuiper.AuthToken, err error) {
+func (ls *LogService) Authenticate(c echo.Context, user, password string) (resp andro.AuthToken, err error) {
 	defer func(begin time.Time) {
 		ls.logger.Log(
 			c,
@@ -57,7 +56,7 @@ func (ls *LogService) Refresh(c echo.Context, req string) (token string, err err
 }
 
 // Me logging
-func (ls *LogService) Me(c echo.Context) (resp kuiper.User, err error) {
+func (ls *LogService) Me(c echo.Context) (resp andro.User, err error) {
 	defer func(begin time.Time) {
 		ls.logger.Log(
 			c,

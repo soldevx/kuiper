@@ -5,12 +5,11 @@ import (
 
 	"github.com/labstack/echo"
 
-	kuiper "github.com/soldevx/kuiper/kuipersrv"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/api/user"
+	"github.com/soldevx/kuiper/andro/pkg/api/user"
 )
 
 // New creates new user logging service
-func New(svc user.Service, logger kuiper.Logger) *LogService {
+func New(svc user.Service, logger andro.Logger) *LogService {
 	return &LogService{
 		Service: svc,
 		logger:  logger,
@@ -20,13 +19,13 @@ func New(svc user.Service, logger kuiper.Logger) *LogService {
 // LogService represents user logging service
 type LogService struct {
 	user.Service
-	logger kuiper.Logger
+	logger andro.Logger
 }
 
 const name = "user"
 
 // Create logging
-func (ls *LogService) Create(c echo.Context, req kuiper.User) (resp kuiper.User, err error) {
+func (ls *LogService) Create(c echo.Context, req andro.User) (resp andro.User, err error) {
 	defer func(begin time.Time) {
 		req.Password = "xxx-redacted-xxx"
 		ls.logger.Log(
@@ -43,7 +42,7 @@ func (ls *LogService) Create(c echo.Context, req kuiper.User) (resp kuiper.User,
 }
 
 // List logging
-func (ls *LogService) List(c echo.Context, req kuiper.Pagination) (resp []kuiper.User, err error) {
+func (ls *LogService) List(c echo.Context, req andro.Pagination) (resp []andro.User, err error) {
 	defer func(begin time.Time) {
 		ls.logger.Log(
 			c,
@@ -59,7 +58,7 @@ func (ls *LogService) List(c echo.Context, req kuiper.Pagination) (resp []kuiper
 }
 
 // View logging
-func (ls *LogService) View(c echo.Context, req int) (resp kuiper.User, err error) {
+func (ls *LogService) View(c echo.Context, req int) (resp andro.User, err error) {
 	defer func(begin time.Time) {
 		ls.logger.Log(
 			c,
@@ -90,7 +89,7 @@ func (ls *LogService) Delete(c echo.Context, req int) (err error) {
 }
 
 // Update logging
-func (ls *LogService) Update(c echo.Context, req user.Update) (resp kuiper.User, err error) {
+func (ls *LogService) Update(c echo.Context, req user.Update) (resp andro.User, err error) {
 	defer func(begin time.Time) {
 		ls.logger.Log(
 			c,

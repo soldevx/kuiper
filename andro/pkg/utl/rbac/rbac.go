@@ -2,8 +2,6 @@ package rbac
 
 import (
 	"github.com/labstack/echo"
-
-	kuiper "github.com/soldevx/kuiper/kuipersrv"
 )
 
 // Service is RBAC application service
@@ -17,14 +15,14 @@ func checkBool(b bool) error {
 }
 
 // User returns user data stored in jwt token
-func (s Service) User(c echo.Context) kuiper.AuthUser {
+func (s Service) User(c echo.Context) andro.AuthUser {
 	id := c.Get("id").(int)
 	companyID := c.Get("company_id").(int)
 	locationID := c.Get("location_id").(int)
 	user := c.Get("username").(string)
 	email := c.Get("email").(string)
-	role := c.Get("role").(kuiper.AccessRole)
-	return kuiper.AuthUser{
+	role := c.Get("role").(andro.AccessRole)
+	return andro.AuthUser{
 		ID:         id,
 		Username:   user,
 		CompanyID:  companyID,
@@ -35,8 +33,8 @@ func (s Service) User(c echo.Context) kuiper.AuthUser {
 }
 
 // EnforceRole authorizes request by AccessRole
-func (s Service) EnforceRole(c echo.Context, r kuiper.AccessRole) error {
-	return checkBool(!(c.Get("role").(kuiper.AccessRole) > r))
+func (s Service) EnforceRole(c echo.Context, r andro.AccessRole) error {
+	return checkBool(!(c.Get("role").(andro.AccessRole) > r))
 }
 
 // EnforceUser checks whether the request to change user data is done by the same user
@@ -56,7 +54,7 @@ func (s Service) EnforceCompany(c echo.Context, ID int) error {
 	if s.isAdmin(c) {
 		return nil
 	}
-	if err := s.EnforceRole(c, kuiper.CompanyAdminRole); err != nil {
+	if err := s.EnforceRole(c, andro.CompanyAdminRole); err != nil {
 		return err
 	}
 	return checkBool(c.Get("company_id").(int) == ID)
@@ -68,24 +66,24 @@ func (s Service) EnforceLocation(c echo.Context, ID int) error {
 	if s.isCompanyAdmin(c) {
 		return nil
 	}
-	if err := s.EnforceRole(c, kuiper.LocationAdminRole); err != nil {
+	if err := s.EnforceRole(c, andro.LocationAdminRole); err != nil {
 		return err
 	}
 	return checkBool(c.Get("location_id").(int) == ID)
 }
 
 func (s Service) isAdmin(c echo.Context) bool {
-	return !(c.Get("role").(kuiper.AccessRole) > kuiper.AdminRole)
+	return !(c.Get("role").(andro.AccessRole) > andro.AdminRole)
 }
 
 func (s Service) isCompanyAdmin(c echo.Context) bool {
 	// Must query company ID in database for the given user
-	return !(c.Get("role").(kuiper.AccessRole) > kuiper.CompanyAdminRole)
+	return !(c.Get("role").(andro.AccessRole) > andro.CompanyAdminRole)
 }
 
 // AccountCreate performs auth check when creating a new account
 // Location admin cannot create accounts, needs to be fixed on EnforceLocation function
-func (s Service) AccountCreate(c echo.Context, roleID kuiper.AccessRole, companyID, locationID int) error {
+func (s Service) AccountCreate(c echo.Context, roleID andro.AccessRole, companyID, locationID int) error {
 	if err := s.EnforceLocation(c, locationID); err != nil {
 		return err
 	}
@@ -94,6 +92,6 @@ func (s Service) AccountCreate(c echo.Context, roleID kuiper.AccessRole, company
 
 // IsLowerRole checks whether the requesting user has higher role than the user it wants to change
 // Used for account creation/deletion
-func (s Service) IsLowerRole(c echo.Context, r kuiper.AccessRole) error {
-	return checkBool(c.Get("role").(kuiper.AccessRole) < r)
+func (s Service) IsLowerRole(c echo.Context, r andro.AccessRole) error {
+	return checkBool(c.Get("role").(andro.AccessRole) < r)
 }

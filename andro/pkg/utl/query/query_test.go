@@ -5,54 +5,52 @@ import (
 
 	"github.com/labstack/echo"
 
-	kuiper "github.com/soldevx/kuiper/kuipersrv"
-
 	"github.com/stretchr/testify/assert"
 
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/query"
+	"github.com/soldevx/kuiper/andro/pkg/utl/query"
 )
 
 func TestList(t *testing.T) {
 	type args struct {
-		user kuiper.AuthUser
+		user andro.AuthUser
 	}
 	cases := []struct {
 		name     string
 		args     args
-		wantData *kuiper.ListQuery
+		wantData *andro.ListQuery
 		wantErr  error
 	}{
 		{
 			name: "Super admin user",
-			args: args{user: kuiper.AuthUser{
-				Role: kuiper.SuperAdminRole,
+			args: args{user: andro.AuthUser{
+				Role: andro.SuperAdminRole,
 			}},
 		},
 		{
 			name: "Company admin user",
-			args: args{user: kuiper.AuthUser{
-				Role:      kuiper.CompanyAdminRole,
+			args: args{user: andro.AuthUser{
+				Role:      andro.CompanyAdminRole,
 				CompanyID: 1,
 			}},
-			wantData: &kuiper.ListQuery{
+			wantData: &andro.ListQuery{
 				Query: "company_id = ?",
 				ID:    1},
 		},
 		{
 			name: "Location admin user",
-			args: args{user: kuiper.AuthUser{
-				Role:       kuiper.LocationAdminRole,
+			args: args{user: andro.AuthUser{
+				Role:       andro.LocationAdminRole,
 				CompanyID:  1,
 				LocationID: 2,
 			}},
-			wantData: &kuiper.ListQuery{
+			wantData: &andro.ListQuery{
 				Query: "location_id = ?",
 				ID:    2},
 		},
 		{
 			name: "Normal user",
-			args: args{user: kuiper.AuthUser{
-				Role: kuiper.UserRole,
+			args: args{user: andro.AuthUser{
+				Role: andro.UserRole,
 			}},
 			wantErr: echo.ErrForbidden,
 		},

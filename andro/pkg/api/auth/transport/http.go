@@ -3,7 +3,7 @@ package transport
 import (
 	"net/http"
 
-	"github.com/soldevx/kuiper/kuipersrv/pkg/api/auth"
+	"github.com/soldevx/kuiper/andro/pkg/api/auth"
 
 	"github.com/labstack/echo"
 )

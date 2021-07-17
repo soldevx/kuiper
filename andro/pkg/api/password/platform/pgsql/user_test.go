@@ -5,9 +5,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	kuiper "github.com/soldevx/kuiper/kuipersrv"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/api/password/platform/pgsql"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/mock"
+	"github.com/soldevx/kuiper/andro/pkg/api/password/platform/pgsql"
+	"github.com/soldevx/kuiper/andro/pkg/utl/mock"
 )
 
 func TestView(t *testing.T) {
@@ -15,7 +14,7 @@ func TestView(t *testing.T) {
 		name     string
 		wantErr  bool
 		id       int
-		wantData kuiper.User
+		wantData andro.User
 	}{
 		{
 			name:    "User does not exist",
@@ -25,7 +24,7 @@ func TestView(t *testing.T) {
 		{
 			name: "Success",
 			id:   2,
-			wantData: kuiper.User{
+			wantData: andro.User{
 				Email:      "tomjones@mail.com",
 				FirstName:  "Tom",
 				LastName:   "Jones",
@@ -34,7 +33,7 @@ func TestView(t *testing.T) {
 				CompanyID:  1,
 				LocationID: 1,
 				Password:   "newPass",
-				Base: kuiper.Base{
+				Base: andro.Base{
 					ID: 2,
 				},
 			},
@@ -44,9 +43,9 @@ func TestView(t *testing.T) {
 	dbCon := mock.NewPGContainer(t)
 	defer dbCon.Shutdown()
 
-	db := mock.NewDB(t, dbCon, &kuiper.Role{}, &kuiper.User{})
+	db := mock.NewDB(t, dbCon, &andro.Role{}, &andro.User{})
 
-	if err := mock.InsertMultiple(db, &kuiper.Role{
+	if err := mock.InsertMultiple(db, &andro.Role{
 		ID:          1,
 		AccessLevel: 1,
 		Name:        "SUPER_ADMIN"}, &cases[1].wantData); err != nil {
@@ -76,13 +75,13 @@ func TestUpdate(t *testing.T) {
 	cases := []struct {
 		name     string
 		wantErr  bool
-		usr      kuiper.User
-		wantData kuiper.User
+		usr      andro.User
+		wantData andro.User
 	}{
 		{
 			name: "Success",
-			usr: kuiper.User{
-				Base: kuiper.Base{
+			usr: andro.User{
+				Base: andro.Base{
 					ID: 2,
 				},
 				FirstName: "Z",
@@ -92,7 +91,7 @@ func TestUpdate(t *testing.T) {
 				Mobile:    "345678",
 				Username:  "newUsername",
 			},
-			wantData: kuiper.User{
+			wantData: andro.User{
 				Email:      "tomjones@mail.com",
 				FirstName:  "Z",
 				LastName:   "Freak",
@@ -104,7 +103,7 @@ func TestUpdate(t *testing.T) {
 				Address:    "Address",
 				Phone:      "123456",
 				Mobile:     "345678",
-				Base: kuiper.Base{
+				Base: andro.Base{
 					ID: 2,
 				},
 			},
@@ -114,9 +113,9 @@ func TestUpdate(t *testing.T) {
 	dbCon := mock.NewPGContainer(t)
 	defer dbCon.Shutdown()
 
-	db := mock.NewDB(t, dbCon, &kuiper.Role{}, &kuiper.User{})
+	db := mock.NewDB(t, dbCon, &andro.Role{}, &andro.User{})
 
-	if err := mock.InsertMultiple(db, &kuiper.Role{
+	if err := mock.InsertMultiple(db, &andro.Role{
 		ID:          1,
 		AccessLevel: 1,
 		Name:        "SUPER_ADMIN"}, &cases[0].usr); err != nil {
@@ -130,8 +129,8 @@ func TestUpdate(t *testing.T) {
 			err := udb.Update(db, tt.wantData)
 			assert.Equal(t, tt.wantErr, err != nil)
 			if tt.wantData.ID != 0 {
-				user := kuiper.User{
-					Base: kuiper.Base{
+				user := andro.User{
+					Base: andro.Base{
 						ID: tt.usr.ID,
 					},
 				}

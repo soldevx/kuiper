@@ -1,4 +1,4 @@
-package kuiper
+package andro
 
 // Pagination constants
 const (

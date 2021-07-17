@@ -5,8 +5,6 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
-
-	kuiper "github.com/soldevx/kuiper/kuipersrv"
 )
 
 // TokenParser represents JWT token parser
@@ -30,7 +28,7 @@ func Middleware(tokenParser TokenParser) echo.MiddlewareFunc {
 			locationID := int(claims["l"].(float64))
 			username := claims["u"].(string)
 			email := claims["e"].(string)
-			role := kuiper.AccessRole(claims["r"].(float64))
+			role := andro.AccessRole(claims["r"].(float64))
 
 			c.Set("id", id)
 			c.Set("company_id", companyID)

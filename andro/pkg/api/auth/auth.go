@@ -4,8 +4,6 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo"
-
-	kuiper "github.com/soldevx/kuiper/kuipersrv"
 )
 
 // Custom errors
@@ -14,32 +12,32 @@ var (
 )
 
 // Authenticate tries to authenticate the user provided by username and password
-func (a Auth) Authenticate(c echo.Context, user, pass string) (kuiper.AuthToken, error) {
+func (a Auth) Authenticate(c echo.Context, user, pass string) (andro.AuthToken, error) {
 	u, err := a.udb.FindByUsername(a.db, user)
 	if err != nil {
-		return kuiper.AuthToken{}, err
+		return andro.AuthToken{}, err
 	}
 
 	if !a.sec.HashMatchesPassword(u.Password, pass) {
-		return kuiper.AuthToken{}, ErrInvalidCredentials
+		return andro.AuthToken{}, ErrInvalidCredentials
 	}
 
 	if !u.Active {
-		return kuiper.AuthToken{}, kuiper.ErrUnauthorized
+		return andro.AuthToken{}, andro.ErrUnauthorized
 	}
 
 	token, err := a.tg.GenerateToken(u)
 	if err != nil {
-		return kuiper.AuthToken{}, kuiper.ErrUnauthorized
+		return andro.AuthToken{}, andro.ErrUnauthorized
 	}
 
 	u.UpdateLastLogin(a.sec.Token(token))
 
 	if err := a.udb.Update(a.db, u); err != nil {
-		return kuiper.AuthToken{}, err
+		return andro.AuthToken{}, err
 	}
 
-	return kuiper.AuthToken{Token: token, RefreshToken: u.Token}, nil
+	return andro.AuthToken{Token: token, RefreshToken: u.Token}, nil
 }
 
 // Refresh refreshes jwt token and puts new claims inside
@@ -52,7 +50,7 @@ func (a Auth) Refresh(c echo.Context, refreshToken string) (string, error) {
 }
 
 // Me returns info about currently logged user
-func (a Auth) Me(c echo.Context) (kuiper.User, error) {
+func (a Auth) Me(c echo.Context) (andro.User, error) {
 	au := a.rbac.User(c)
 	return a.udb.View(a.db, au.ID)
 }

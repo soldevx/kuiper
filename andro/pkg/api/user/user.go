@@ -4,21 +4,20 @@ package user
 import (
 	"github.com/labstack/echo"
 
-	kuiper "github.com/soldevx/kuiper/kuipersrv"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/query"
+	"github.com/soldevx/kuiper/andro/pkg/utl/query"
 )
 
 // Create creates a new user account
-func (u User) Create(c echo.Context, req kuiper.User) (kuiper.User, error) {
+func (u User) Create(c echo.Context, req andro.User) (andro.User, error) {
 	if err := u.rbac.AccountCreate(c, req.RoleID, req.CompanyID, req.LocationID); err != nil {
-		return kuiper.User{}, err
+		return andro.User{}, err
 	}
 	req.Password = u.sec.Hash(req.Password)
 	return u.udb.Create(u.db, req)
 }
 
 // List returns list of users
-func (u User) List(c echo.Context, p kuiper.Pagination) ([]kuiper.User, error) {
+func (u User) List(c echo.Context, p andro.Pagination) ([]andro.User, error) {
 	au := u.rbac.User(c)
 	q, err := query.List(au)
 	if err != nil {
@@ -28,9 +27,9 @@ func (u User) List(c echo.Context, p kuiper.Pagination) ([]kuiper.User, error) {
 }
 
 // View returns single user
-func (u User) View(c echo.Context, id int) (kuiper.User, error) {
+func (u User) View(c echo.Context, id int) (andro.User, error) {
 	if err := u.rbac.EnforceUser(c, id); err != nil {
-		return kuiper.User{}, err
+		return andro.User{}, err
 	}
 	return u.udb.View(u.db, id)
 }
@@ -58,19 +57,19 @@ type Update struct {
 }
 
 // Update updates user's contact information
-func (u User) Update(c echo.Context, r Update) (kuiper.User, error) {
+func (u User) Update(c echo.Context, r Update) (andro.User, error) {
 	if err := u.rbac.EnforceUser(c, r.ID); err != nil {
-		return kuiper.User{}, err
+		return andro.User{}, err
 	}
 
-	if err := u.udb.Update(u.db, kuiper.User{
-		Base:      kuiper.Base{ID: r.ID},
+	if err := u.udb.Update(u.db, andro.User{
+		Base:      andro.Base{ID: r.ID},
 		FirstName: r.FirstName,
 		LastName:  r.LastName,
 		Mobile:    r.Mobile,
 		Address:   r.Address,
 	}); err != nil {
-		return kuiper.User{}, err
+		return andro.User{}, err
 	}
 
 	return u.udb.View(u.db, r.ID)

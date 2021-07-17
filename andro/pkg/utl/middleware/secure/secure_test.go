@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/middleware/secure"
+	"github.com/soldevx/kuiper/andro/pkg/utl/middleware/secure"
 
 	"github.com/labstack/echo"
 	"github.com/stretchr/testify/assert"

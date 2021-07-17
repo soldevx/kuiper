@@ -1,4 +1,4 @@
-package kuiper
+package andro
 
 // AccessRole represents access role type
 type AccessRole int

@@ -1,4 +1,4 @@
-package kuiper
+package andro
 
 // Location represents company location model
 type Location struct {

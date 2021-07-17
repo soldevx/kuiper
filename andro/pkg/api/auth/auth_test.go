@@ -6,10 +6,9 @@ import (
 	"github.com/go-pg/pg/v9/orm"
 	"github.com/labstack/echo"
 
-	kuiper "github.com/soldevx/kuiper/kuipersrv"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/api/auth"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/mock"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/mock/mockdb"
+	"github.com/soldevx/kuiper/andro/pkg/api/auth"
+	"github.com/soldevx/kuiper/andro/pkg/utl/mock"
+	"github.com/soldevx/kuiper/andro/pkg/utl/mock/mockdb"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -22,7 +21,7 @@ func TestAuthenticate(t *testing.T) {
 	cases := []struct {
 		name     string
 		args     args
-		wantData kuiper.AuthToken
+		wantData andro.AuthToken
 		wantErr  bool
 		udb      *mockdb.User
 		jwt      *mock.JWT
@@ -33,8 +32,8 @@ func TestAuthenticate(t *testing.T) {
 			args:    args{user: "juzernejm"},
 			wantErr: true,
 			udb: &mockdb.User{
-				FindByUsernameFn: func(db orm.DB, user string) (kuiper.User, error) {
-					return kuiper.User{}, kuiper.ErrGeneric
+				FindByUsernameFn: func(db orm.DB, user string) (andro.User, error) {
+					return andro.User{}, andro.ErrGeneric
 				},
 			},
 		},
@@ -43,8 +42,8 @@ func TestAuthenticate(t *testing.T) {
 			args:    args{user: "juzernejm", pass: "notHashedPassword"},
 			wantErr: true,
 			udb: &mockdb.User{
-				FindByUsernameFn: func(db orm.DB, user string) (kuiper.User, error) {
-					return kuiper.User{Username: user}, nil
+				FindByUsernameFn: func(db orm.DB, user string) (andro.User, error) {
+					return andro.User{Username: user}, nil
 				},
 			},
 			sec: &mock.Secure{
@@ -58,8 +57,8 @@ func TestAuthenticate(t *testing.T) {
 			args:    args{user: "juzernejm", pass: "pass"},
 			wantErr: true,
 			udb: &mockdb.User{
-				FindByUsernameFn: func(db orm.DB, user string) (kuiper.User, error) {
-					return kuiper.User{
+				FindByUsernameFn: func(db orm.DB, user string) (andro.User, error) {
+					return andro.User{
 						Username: user,
 						Password: "pass",
 						Active:   false,
@@ -77,8 +76,8 @@ func TestAuthenticate(t *testing.T) {
 			args:    args{user: "juzernejm", pass: "pass"},
 			wantErr: true,
 			udb: &mockdb.User{
-				FindByUsernameFn: func(db orm.DB, user string) (kuiper.User, error) {
-					return kuiper.User{
+				FindByUsernameFn: func(db orm.DB, user string) (andro.User, error) {
+					return andro.User{
 						Username: user,
 						Password: "pass",
 						Active:   true,
@@ -91,8 +90,8 @@ func TestAuthenticate(t *testing.T) {
 				},
 			},
 			jwt: &mock.JWT{
-				GenerateTokenFn: func(u kuiper.User) (string, error) {
-					return "", kuiper.ErrGeneric
+				GenerateTokenFn: func(u andro.User) (string, error) {
+					return "", andro.ErrGeneric
 				},
 			},
 		},
@@ -101,15 +100,15 @@ func TestAuthenticate(t *testing.T) {
 			args:    args{user: "juzernejm", pass: "pass"},
 			wantErr: true,
 			udb: &mockdb.User{
-				FindByUsernameFn: func(db orm.DB, user string) (kuiper.User, error) {
-					return kuiper.User{
+				FindByUsernameFn: func(db orm.DB, user string) (andro.User, error) {
+					return andro.User{
 						Username: user,
 						Password: "pass",
 						Active:   true,
 					}, nil
 				},
-				UpdateFn: func(db orm.DB, u kuiper.User) error {
-					return kuiper.ErrGeneric
+				UpdateFn: func(db orm.DB, u andro.User) error {
+					return andro.ErrGeneric
 				},
 			},
 			sec: &mock.Secure{
@@ -121,7 +120,7 @@ func TestAuthenticate(t *testing.T) {
 				},
 			},
 			jwt: &mock.JWT{
-				GenerateTokenFn: func(u kuiper.User) (string, error) {
+				GenerateTokenFn: func(u andro.User) (string, error) {
 					return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9", nil
 				},
 			},
@@ -130,19 +129,19 @@ func TestAuthenticate(t *testing.T) {
 			name: "Success",
 			args: args{user: "juzernejm", pass: "pass"},
 			udb: &mockdb.User{
-				FindByUsernameFn: func(db orm.DB, user string) (kuiper.User, error) {
-					return kuiper.User{
+				FindByUsernameFn: func(db orm.DB, user string) (andro.User, error) {
+					return andro.User{
 						Username: user,
 						Password: "password",
 						Active:   true,
 					}, nil
 				},
-				UpdateFn: func(db orm.DB, u kuiper.User) error {
+				UpdateFn: func(db orm.DB, u andro.User) error {
 					return nil
 				},
 			},
 			jwt: &mock.JWT{
-				GenerateTokenFn: func(u kuiper.User) (string, error) {
+				GenerateTokenFn: func(u andro.User) (string, error) {
 					return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9", nil
 				},
 			},
@@ -154,7 +153,7 @@ func TestAuthenticate(t *testing.T) {
 					return "refreshtoken"
 				},
 			},
-			wantData: kuiper.AuthToken{
+			wantData: andro.AuthToken{
 				Token:        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
 				RefreshToken: "refreshtoken",
 			},
@@ -190,8 +189,8 @@ func TestRefresh(t *testing.T) {
 			args:    args{token: "refreshtoken"},
 			wantErr: true,
 			udb: &mockdb.User{
-				FindByTokenFn: func(db orm.DB, token string) (kuiper.User, error) {
-					return kuiper.User{}, kuiper.ErrGeneric
+				FindByTokenFn: func(db orm.DB, token string) (andro.User, error) {
+					return andro.User{}, andro.ErrGeneric
 				},
 			},
 		},
@@ -200,8 +199,8 @@ func TestRefresh(t *testing.T) {
 			args:    args{token: "refreshtoken"},
 			wantErr: true,
 			udb: &mockdb.User{
-				FindByTokenFn: func(db orm.DB, token string) (kuiper.User, error) {
-					return kuiper.User{
+				FindByTokenFn: func(db orm.DB, token string) (andro.User, error) {
+					return andro.User{
 						Username: "username",
 						Password: "password",
 						Active:   true,
@@ -210,8 +209,8 @@ func TestRefresh(t *testing.T) {
 				},
 			},
 			jwt: &mock.JWT{
-				GenerateTokenFn: func(u kuiper.User) (string, error) {
-					return "", kuiper.ErrGeneric
+				GenerateTokenFn: func(u andro.User) (string, error) {
+					return "", andro.ErrGeneric
 				},
 			},
 		},
@@ -219,8 +218,8 @@ func TestRefresh(t *testing.T) {
 			name: "Success",
 			args: args{token: "refreshtoken"},
 			udb: &mockdb.User{
-				FindByTokenFn: func(db orm.DB, token string) (kuiper.User, error) {
-					return kuiper.User{
+				FindByTokenFn: func(db orm.DB, token string) (andro.User, error) {
+					return andro.User{
 						Username: "username",
 						Password: "password",
 						Active:   true,
@@ -229,7 +228,7 @@ func TestRefresh(t *testing.T) {
 				},
 			},
 			jwt: &mock.JWT{
-				GenerateTokenFn: func(u kuiper.User) (string, error) {
+				GenerateTokenFn: func(u andro.User) (string, error) {
 					return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9", nil
 				},
 			},
@@ -249,7 +248,7 @@ func TestRefresh(t *testing.T) {
 func TestMe(t *testing.T) {
 	cases := []struct {
 		name     string
-		wantData kuiper.User
+		wantData andro.User
 		udb      *mockdb.User
 		rbac     *mock.RBAC
 		wantErr  bool
@@ -257,36 +256,36 @@ func TestMe(t *testing.T) {
 		{
 			name: "Success",
 			rbac: &mock.RBAC{
-				UserFn: func(echo.Context) kuiper.AuthUser {
-					return kuiper.AuthUser{ID: 9}
+				UserFn: func(echo.Context) andro.AuthUser {
+					return andro.AuthUser{ID: 9}
 				},
 			},
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (kuiper.User, error) {
-					return kuiper.User{
-						Base: kuiper.Base{
+				ViewFn: func(db orm.DB, id int) (andro.User, error) {
+					return andro.User{
+						Base: andro.Base{
 							ID:        id,
 							CreatedAt: mock.TestTime(1999),
 							UpdatedAt: mock.TestTime(2000),
 						},
 						FirstName: "John",
 						LastName:  "Doe",
-						Role: &kuiper.Role{
-							AccessLevel: kuiper.UserRole,
+						Role: &andro.Role{
+							AccessLevel: andro.UserRole,
 						},
 					}, nil
 				},
 			},
-			wantData: kuiper.User{
-				Base: kuiper.Base{
+			wantData: andro.User{
+				Base: andro.Base{
 					ID:        9,
 					CreatedAt: mock.TestTime(1999),
 					UpdatedAt: mock.TestTime(2000),
 				},
 				FirstName: "John",
 				LastName:  "Doe",
-				Role: &kuiper.Role{
-					AccessLevel: kuiper.UserRole,
+				Role: &andro.Role{
+					AccessLevel: andro.UserRole,
 				},
 			},
 		},

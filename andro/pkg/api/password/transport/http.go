@@ -4,8 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
-	kuiper "github.com/soldevx/kuiper/kuipersrv"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/api/password"
+	"github.com/soldevx/kuiper/andro/pkg/api/password"
 
 	"github.com/labstack/echo"
 )
@@ -67,7 +66,7 @@ type changeReq struct {
 func (h *HTTP) change(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return kuiper.ErrBadRequest
+		return andro.ErrBadRequest
 	}
 
 	p := new(changeReq)

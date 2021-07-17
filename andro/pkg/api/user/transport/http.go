@@ -4,8 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
-	kuiper "github.com/soldevx/kuiper/kuipersrv"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/api/user"
+	"github.com/soldevx/kuiper/andro/pkg/api/user"
 
 	"github.com/labstack/echo"
 )
@@ -150,9 +149,9 @@ type createReq struct {
 	PasswordConfirm string `json:"password_confirm" validate:"required"`
 	Email           string `json:"email" validate:"required,email"`
 
-	CompanyID  int               `json:"company_id" validate:"required"`
-	LocationID int               `json:"location_id" validate:"required"`
-	RoleID     kuiper.AccessRole `json:"role_id" validate:"required"`
+	CompanyID  int              `json:"company_id" validate:"required"`
+	LocationID int              `json:"location_id" validate:"required"`
+	RoleID     andro.AccessRole `json:"role_id" validate:"required"`
 }
 
 func (h HTTP) create(c echo.Context) error {
@@ -167,11 +166,11 @@ func (h HTTP) create(c echo.Context) error {
 		return ErrPasswordsNotMaching
 	}
 
-	if r.RoleID < kuiper.SuperAdminRole || r.RoleID > kuiper.UserRole {
-		return kuiper.ErrBadRequest
+	if r.RoleID < andro.SuperAdminRole || r.RoleID > andro.UserRole {
+		return andro.ErrBadRequest
 	}
 
-	usr, err := h.svc.Create(c, kuiper.User{
+	usr, err := h.svc.Create(c, andro.User{
 		Username:   r.Username,
 		Password:   r.Password,
 		Email:      r.Email,
@@ -190,12 +189,12 @@ func (h HTTP) create(c echo.Context) error {
 }
 
 type listResponse struct {
-	Users []kuiper.User `json:"users"`
-	Page  int           `json:"page"`
+	Users []andro.User `json:"users"`
+	Page  int          `json:"page"`
 }
 
 func (h HTTP) list(c echo.Context) error {
-	var req kuiper.PaginationReq
+	var req andro.PaginationReq
 	if err := c.Bind(&req); err != nil {
 		return err
 	}
@@ -212,7 +211,7 @@ func (h HTTP) list(c echo.Context) error {
 func (h HTTP) view(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return kuiper.ErrBadRequest
+		return andro.ErrBadRequest
 	}
 
 	result, err := h.svc.View(c, id)
@@ -237,7 +236,7 @@ type updateReq struct {
 func (h HTTP) update(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return kuiper.ErrBadRequest
+		return andro.ErrBadRequest
 	}
 
 	req := new(updateReq)
@@ -264,7 +263,7 @@ func (h HTTP) update(c echo.Context) error {
 func (h HTTP) delete(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		return kuiper.ErrBadRequest
+		return andro.ErrBadRequest
 	}
 
 	if err := h.svc.Delete(c, id); err != nil {

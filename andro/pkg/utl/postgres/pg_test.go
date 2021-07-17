@@ -6,9 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	kuiper "github.com/soldevx/kuiper/kuipersrv"
-
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/postgres"
+	"github.com/soldevx/kuiper/andro/pkg/utl/postgres"
 
 	"github.com/fortytw2/dockertest"
 )
@@ -48,7 +46,7 @@ func TestNew(t *testing.T) {
 		t.Fatalf("Error establishing connection %v", err)
 	}
 
-	var user kuiper.User
+	var user andro.User
 	db.Select(&user)
 
 	assert.NotNil(t, db)

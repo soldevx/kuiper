@@ -9,8 +9,7 @@ import (
 	"github.com/labstack/echo"
 	"github.com/stretchr/testify/assert"
 
-	kuiper "github.com/soldevx/kuiper/kuipersrv"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/middleware/auth"
+	"github.com/soldevx/kuiper/andro/pkg/utl/middleware/auth"
 )
 
 func echoHandler(mw ...echo.MiddlewareFunc) *echo.Echo {
@@ -32,7 +31,7 @@ type tokenParser struct {
 
 func (t tokenParser) ParseToken(s string) (*jwt.Token, error) {
 	if s == "" {
-		return nil, kuiper.ErrGeneric
+		return nil, andro.ErrGeneric
 	}
 	return &jwt.Token{
 		Raw:    "abcd",

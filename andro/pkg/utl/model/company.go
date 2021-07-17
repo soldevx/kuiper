@@ -1,4 +1,4 @@
-package kuiper
+package andro
 
 // Company represents company model
 type Company struct {

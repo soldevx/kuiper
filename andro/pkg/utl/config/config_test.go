@@ -3,7 +3,7 @@ package config_test
 import (
 	"testing"
 
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/config"
+	"github.com/soldevx/kuiper/andro/pkg/utl/config"
 	"github.com/stretchr/testify/assert"
 )
 

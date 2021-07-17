@@ -6,13 +6,12 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	kuiper "github.com/soldevx/kuiper/kuipersrv"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/api/password"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/api/password/transport"
+	"github.com/soldevx/kuiper/andro/pkg/api/password"
+	"github.com/soldevx/kuiper/andro/pkg/api/password/transport"
 
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/mock"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/mock/mockdb"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/server"
+	"github.com/soldevx/kuiper/andro/pkg/utl/mock"
+	"github.com/soldevx/kuiper/andro/pkg/utl/mock/mockdb"
+	"github.com/soldevx/kuiper/andro/pkg/utl/server"
 
 	"github.com/go-pg/pg/v9/orm"
 	"github.com/labstack/echo"
@@ -67,10 +66,10 @@ func TestChangePassword(t *testing.T) {
 			},
 			id: "1",
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (kuiper.User, error) {
-					return kuiper.User{Password: "oldPassword"}, nil
+				ViewFn: func(db orm.DB, id int) (andro.User, error) {
+					return andro.User{Password: "oldPassword"}, nil
 				},
-				UpdateFn: func(db orm.DB, usr kuiper.User) error {
+				UpdateFn: func(db orm.DB, usr andro.User) error {
 					return nil
 				},
 			},

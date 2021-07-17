@@ -6,8 +6,7 @@ import (
 	"os"
 	"strings"
 
-	kuiper "github.com/soldevx/kuiper/kuipersrv"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/secure"
+	"github.com/soldevx/kuiper/andro/pkg/utl/secure"
 
 	"github.com/go-pg/pg/v9"
 	"github.com/go-pg/pg/v9/orm"
@@ -29,7 +28,7 @@ func main() {
 	db := pg.Connect(u)
 	_, err = db.Exec("SELECT 1")
 	checkErr(err)
-	createSchema(db, &kuiper.Company{}, &kuiper.Location{}, &kuiper.Role{}, &kuiper.User{})
+	createSchema(db, &andro.Company{}, &andro.Location{}, &andro.Role{}, &andro.User{})
 
 	for _, v := range queries[0 : len(queries)-1] {
 		_, err := db.Exec(v)

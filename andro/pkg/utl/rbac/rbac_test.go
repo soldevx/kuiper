@@ -3,9 +3,8 @@ package rbac_test
 import (
 	"testing"
 
-	kuiper "github.com/soldevx/kuiper/kuipersrv"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/mock"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/rbac"
+	"github.com/soldevx/kuiper/andro/pkg/utl/mock"
+	"github.com/soldevx/kuiper/andro/pkg/utl/rbac"
 
 	"github.com/labstack/echo"
 
@@ -15,14 +14,14 @@ import (
 func TestUser(t *testing.T) {
 	ctx := mock.EchoCtxWithKeys([]string{
 		"id", "company_id", "location_id", "username", "email", "role"},
-		9, 15, 52, "ribice", "ribice@gmail.com", kuiper.SuperAdminRole)
-	wantUser := kuiper.AuthUser{
+		9, 15, 52, "ribice", "ribice@gmail.com", andro.SuperAdminRole)
+	wantUser := andro.AuthUser{
 		ID:         9,
 		Username:   "ribice",
 		CompanyID:  15,
 		LocationID: 52,
 		Email:      "ribice@gmail.com",
-		Role:       kuiper.SuperAdminRole,
+		Role:       andro.SuperAdminRole,
 	}
 	rbacSvc := rbac.Service{}
 	assert.Equal(t, wantUser, rbacSvc.User(ctx))
@@ -31,7 +30,7 @@ func TestUser(t *testing.T) {
 func TestEnforceRole(t *testing.T) {
 	type args struct {
 		ctx  echo.Context
-		role kuiper.AccessRole
+		role andro.AccessRole
 	}
 	cases := []struct {
 		name    string
@@ -40,12 +39,12 @@ func TestEnforceRole(t *testing.T) {
 	}{
 		{
 			name:    "Not authorized",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"role"}, kuiper.CompanyAdminRole), role: kuiper.SuperAdminRole},
+			args:    args{ctx: mock.EchoCtxWithKeys([]string{"role"}, andro.CompanyAdminRole), role: andro.SuperAdminRole},
 			wantErr: true,
 		},
 		{
 			name:    "Authorized",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"role"}, kuiper.SuperAdminRole), role: kuiper.CompanyAdminRole},
+			args:    args{ctx: mock.EchoCtxWithKeys([]string{"role"}, andro.SuperAdminRole), role: andro.CompanyAdminRole},
 			wantErr: false,
 		},
 	}
@@ -70,17 +69,17 @@ func TestEnforceUser(t *testing.T) {
 	}{
 		{
 			name:    "Not same user, not an admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"id", "role"}, 15, kuiper.LocationAdminRole), id: 122},
+			args:    args{ctx: mock.EchoCtxWithKeys([]string{"id", "role"}, 15, andro.LocationAdminRole), id: 122},
 			wantErr: true,
 		},
 		{
 			name:    "Not same user, but admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"id", "role"}, 22, kuiper.SuperAdminRole), id: 44},
+			args:    args{ctx: mock.EchoCtxWithKeys([]string{"id", "role"}, 22, andro.SuperAdminRole), id: 44},
 			wantErr: false,
 		},
 		{
 			name:    "Same user",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"id", "role"}, 8, kuiper.AdminRole), id: 8},
+			args:    args{ctx: mock.EchoCtxWithKeys([]string{"id", "role"}, 8, andro.AdminRole), id: 8},
 			wantErr: false,
 		},
 	}
@@ -105,22 +104,22 @@ func TestEnforceCompany(t *testing.T) {
 	}{
 		{
 			name:    "Not same company, not an admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "role"}, 7, kuiper.UserRole), id: 9},
+			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "role"}, 7, andro.UserRole), id: 9},
 			wantErr: true,
 		},
 		{
 			name:    "Same company, not company admin or admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "role"}, 22, kuiper.UserRole), id: 22},
+			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "role"}, 22, andro.UserRole), id: 22},
 			wantErr: true,
 		},
 		{
 			name:    "Same company, company admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "role"}, 5, kuiper.CompanyAdminRole), id: 5},
+			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "role"}, 5, andro.CompanyAdminRole), id: 5},
 			wantErr: false,
 		},
 		{
 			name:    "Not same company but admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "role"}, 8, kuiper.AdminRole), id: 9},
+			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "role"}, 8, andro.AdminRole), id: 9},
 			wantErr: false,
 		},
 	}
@@ -145,22 +144,22 @@ func TestEnforceLocation(t *testing.T) {
 	}{
 		{
 			name:    "Not same location, not an admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"location_id", "role"}, 7, kuiper.UserRole), id: 9},
+			args:    args{ctx: mock.EchoCtxWithKeys([]string{"location_id", "role"}, 7, andro.UserRole), id: 9},
 			wantErr: true,
 		},
 		{
 			name:    "Same location, not company admin or admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"location_id", "role"}, 22, kuiper.UserRole), id: 22},
+			args:    args{ctx: mock.EchoCtxWithKeys([]string{"location_id", "role"}, 22, andro.UserRole), id: 22},
 			wantErr: true,
 		},
 		{
 			name:    "Same location, company admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"location_id", "role"}, 5, kuiper.CompanyAdminRole), id: 5},
+			args:    args{ctx: mock.EchoCtxWithKeys([]string{"location_id", "role"}, 5, andro.CompanyAdminRole), id: 5},
 			wantErr: false,
 		},
 		{
 			name:    "Location admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"location_id", "role"}, 5, kuiper.LocationAdminRole), id: 5},
+			args:    args{ctx: mock.EchoCtxWithKeys([]string{"location_id", "role"}, 5, andro.LocationAdminRole), id: 5},
 			wantErr: false,
 		},
 	}
@@ -176,7 +175,7 @@ func TestEnforceLocation(t *testing.T) {
 func TestAccountCreate(t *testing.T) {
 	type args struct {
 		ctx        echo.Context
-		roleID     kuiper.AccessRole
+		roleID     andro.AccessRole
 		companyID  int
 		locationID int
 	}
@@ -187,32 +186,32 @@ func TestAccountCreate(t *testing.T) {
 	}{
 		{
 			name:    "Different location, company, creating user role, not an admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "location_id", "role"}, 2, 3, kuiper.UserRole), roleID: 500, companyID: 7, locationID: 8},
+			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "location_id", "role"}, 2, 3, andro.UserRole), roleID: 500, companyID: 7, locationID: 8},
 			wantErr: true,
 		},
 		{
 			name:    "Same location, not company, creating user role, not an admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "location_id", "role"}, 2, 3, kuiper.UserRole), roleID: 500, companyID: 2, locationID: 8},
+			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "location_id", "role"}, 2, 3, andro.UserRole), roleID: 500, companyID: 2, locationID: 8},
 			wantErr: true,
 		},
 		{
 			name:    "Different location, company, creating user role, not an admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "location_id", "role"}, 2, 3, kuiper.CompanyAdminRole), roleID: 400, companyID: 2, locationID: 4},
+			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "location_id", "role"}, 2, 3, andro.CompanyAdminRole), roleID: 400, companyID: 2, locationID: 4},
 			wantErr: false,
 		},
 		{
 			name:    "Same location, company, creating user role, not an admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "location_id", "role"}, 2, 3, kuiper.CompanyAdminRole), roleID: 500, companyID: 2, locationID: 3},
+			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "location_id", "role"}, 2, 3, andro.CompanyAdminRole), roleID: 500, companyID: 2, locationID: 3},
 			wantErr: false,
 		},
 		{
 			name:    "Same location, company, creating user role, admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "location_id", "role"}, 2, 3, kuiper.CompanyAdminRole), roleID: 500, companyID: 2, locationID: 3},
+			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "location_id", "role"}, 2, 3, andro.CompanyAdminRole), roleID: 500, companyID: 2, locationID: 3},
 			wantErr: false,
 		},
 		{
 			name:    "Different everything, admin",
-			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "location_id", "role"}, 2, 3, kuiper.AdminRole), roleID: 200, companyID: 7, locationID: 4},
+			args:    args{ctx: mock.EchoCtxWithKeys([]string{"company_id", "location_id", "role"}, 2, 3, andro.AdminRole), roleID: 200, companyID: 7, locationID: 4},
 			wantErr: false,
 		},
 	}
@@ -226,12 +225,12 @@ func TestAccountCreate(t *testing.T) {
 }
 
 func TestIsLowerRole(t *testing.T) {
-	ctx := mock.EchoCtxWithKeys([]string{"role"}, kuiper.CompanyAdminRole)
+	ctx := mock.EchoCtxWithKeys([]string{"role"}, andro.CompanyAdminRole)
 	rbacSvc := rbac.Service{}
-	if rbacSvc.IsLowerRole(ctx, kuiper.LocationAdminRole) != nil {
+	if rbacSvc.IsLowerRole(ctx, andro.LocationAdminRole) != nil {
 		t.Error("The requested user is higher role than the user requesting it")
 	}
-	if rbacSvc.IsLowerRole(ctx, kuiper.AdminRole) == nil {
+	if rbacSvc.IsLowerRole(ctx, andro.AdminRole) == nil {
 		t.Error("The requested user is lower role than the user requesting it")
 	}
 }

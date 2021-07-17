@@ -4,7 +4,7 @@ import (
 	"crypto/sha1"
 	"testing"
 
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/secure"
+	"github.com/soldevx/kuiper/andro/pkg/utl/secure"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -7,13 +7,12 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	kuiper "github.com/soldevx/kuiper/kuipersrv"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/api/user"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/api/user/transport"
+	"github.com/soldevx/kuiper/andro/pkg/api/user"
+	"github.com/soldevx/kuiper/andro/pkg/api/user/transport"
 
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/mock"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/mock/mockdb"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/server"
+	"github.com/soldevx/kuiper/andro/pkg/utl/mock"
+	"github.com/soldevx/kuiper/andro/pkg/utl/mock/mockdb"
+	"github.com/soldevx/kuiper/andro/pkg/utl/server"
 
 	"github.com/go-pg/pg/v9/orm"
 	"github.com/labstack/echo"
@@ -25,7 +24,7 @@ func TestCreate(t *testing.T) {
 		name       string
 		req        string
 		wantStatus int
-		wantResp   *kuiper.User
+		wantResp   *andro.User
 		udb        *mockdb.User
 		rbac       *mock.RBAC
 		sec        *mock.Secure
@@ -44,7 +43,7 @@ func TestCreate(t *testing.T) {
 			name: "Fail on invalid role",
 			req:  `{"first_name":"John","last_name":"Doe","username":"juzernejm","password":"hunter123","password_confirm":"hunter123","email":"johndoe@gmail.com","company_id":1,"location_id":2,"role_id":50}`,
 			rbac: &mock.RBAC{
-				AccountCreateFn: func(c echo.Context, roleID kuiper.AccessRole, companyID, locationID int) error {
+				AccountCreateFn: func(c echo.Context, roleID andro.AccessRole, companyID, locationID int) error {
 					return echo.ErrForbidden
 				},
 			},
@@ -54,7 +53,7 @@ func TestCreate(t *testing.T) {
 			name: "Fail on RBAC",
 			req:  `{"first_name":"John","last_name":"Doe","username":"juzernejm","password":"hunter123","password_confirm":"hunter123","email":"johndoe@gmail.com","company_id":1,"location_id":2,"role_id":200}`,
 			rbac: &mock.RBAC{
-				AccountCreateFn: func(c echo.Context, roleID kuiper.AccessRole, companyID, locationID int) error {
+				AccountCreateFn: func(c echo.Context, roleID andro.AccessRole, companyID, locationID int) error {
 					return echo.ErrForbidden
 				},
 			},
@@ -65,12 +64,12 @@ func TestCreate(t *testing.T) {
 			name: "Success",
 			req:  `{"first_name":"John","last_name":"Doe","username":"juzernejm","password":"hunter123","password_confirm":"hunter123","email":"johndoe@gmail.com","company_id":1,"location_id":2,"role_id":200}`,
 			rbac: &mock.RBAC{
-				AccountCreateFn: func(c echo.Context, roleID kuiper.AccessRole, companyID, locationID int) error {
+				AccountCreateFn: func(c echo.Context, roleID andro.AccessRole, companyID, locationID int) error {
 					return nil
 				},
 			},
 			udb: &mockdb.User{
-				CreateFn: func(db orm.DB, usr kuiper.User) (kuiper.User, error) {
+				CreateFn: func(db orm.DB, usr andro.User) (andro.User, error) {
 					usr.ID = 1
 					usr.CreatedAt = mock.TestTime(2018)
 					usr.UpdatedAt = mock.TestTime(2018)
@@ -82,8 +81,8 @@ func TestCreate(t *testing.T) {
 					return "h4$h3d"
 				},
 			},
-			wantResp: &kuiper.User{
-				Base: kuiper.Base{
+			wantResp: &andro.User{
+				Base: andro.Base{
 					ID:        1,
 					CreatedAt: mock.TestTime(2018),
 					UpdatedAt: mock.TestTime(2018),
@@ -113,7 +112,7 @@ func TestCreate(t *testing.T) {
 			}
 			defer res.Body.Close()
 			if tt.wantResp != nil {
-				response := new(kuiper.User)
+				response := new(andro.User)
 				if err := json.NewDecoder(res.Body).Decode(response); err != nil {
 					t.Fatal(err)
 				}
@@ -126,8 +125,8 @@ func TestCreate(t *testing.T) {
 
 func TestList(t *testing.T) {
 	type listResponse struct {
-		Users []kuiper.User `json:"users"`
-		Page  int           `json:"page"`
+		Users []andro.User `json:"users"`
+		Page  int          `json:"page"`
 	}
 	cases := []struct {
 		name       string
@@ -147,12 +146,12 @@ func TestList(t *testing.T) {
 			name: "Fail on query list",
 			req:  `?limit=100&page=1`,
 			rbac: &mock.RBAC{
-				UserFn: func(c echo.Context) kuiper.AuthUser {
-					return kuiper.AuthUser{
+				UserFn: func(c echo.Context) andro.AuthUser {
+					return andro.AuthUser{
 						ID:         1,
 						CompanyID:  2,
 						LocationID: 3,
-						Role:       kuiper.UserRole,
+						Role:       andro.UserRole,
 						Email:      "john@mail.com",
 					}
 				}},
@@ -162,21 +161,21 @@ func TestList(t *testing.T) {
 			name: "Success",
 			req:  `?limit=100&page=1`,
 			rbac: &mock.RBAC{
-				UserFn: func(c echo.Context) kuiper.AuthUser {
-					return kuiper.AuthUser{
+				UserFn: func(c echo.Context) andro.AuthUser {
+					return andro.AuthUser{
 						ID:         1,
 						CompanyID:  2,
 						LocationID: 3,
-						Role:       kuiper.SuperAdminRole,
+						Role:       andro.SuperAdminRole,
 						Email:      "john@mail.com",
 					}
 				}},
 			udb: &mockdb.User{
-				ListFn: func(db orm.DB, q *kuiper.ListQuery, p kuiper.Pagination) ([]kuiper.User, error) {
+				ListFn: func(db orm.DB, q *andro.ListQuery, p andro.Pagination) ([]andro.User, error) {
 					if p.Limit == 100 && p.Offset == 100 {
-						return []kuiper.User{
+						return []andro.User{
 							{
-								Base: kuiper.Base{
+								Base: andro.Base{
 									ID:        10,
 									CreatedAt: mock.TestTime(2001),
 									UpdatedAt: mock.TestTime(2002),
@@ -186,14 +185,14 @@ func TestList(t *testing.T) {
 								Email:      "john@mail.com",
 								CompanyID:  2,
 								LocationID: 3,
-								Role: &kuiper.Role{
+								Role: &andro.Role{
 									ID:          1,
 									AccessLevel: 1,
 									Name:        "SUPER_ADMIN",
 								},
 							},
 							{
-								Base: kuiper.Base{
+								Base: andro.Base{
 									ID:        11,
 									CreatedAt: mock.TestTime(2004),
 									UpdatedAt: mock.TestTime(2005),
@@ -203,7 +202,7 @@ func TestList(t *testing.T) {
 								Email:      "joanna@mail.com",
 								CompanyID:  1,
 								LocationID: 2,
-								Role: &kuiper.Role{
+								Role: &andro.Role{
 									ID:          2,
 									AccessLevel: 2,
 									Name:        "ADMIN",
@@ -211,14 +210,14 @@ func TestList(t *testing.T) {
 							},
 						}, nil
 					}
-					return nil, kuiper.ErrGeneric
+					return nil, andro.ErrGeneric
 				},
 			},
 			wantStatus: http.StatusOK,
 			wantResp: &listResponse{
-				Users: []kuiper.User{
+				Users: []andro.User{
 					{
-						Base: kuiper.Base{
+						Base: andro.Base{
 							ID:        10,
 							CreatedAt: mock.TestTime(2001),
 							UpdatedAt: mock.TestTime(2002),
@@ -228,14 +227,14 @@ func TestList(t *testing.T) {
 						Email:      "john@mail.com",
 						CompanyID:  2,
 						LocationID: 3,
-						Role: &kuiper.Role{
+						Role: &andro.Role{
 							ID:          1,
 							AccessLevel: 1,
 							Name:        "SUPER_ADMIN",
 						},
 					},
 					{
-						Base: kuiper.Base{
+						Base: andro.Base{
 							ID:        11,
 							CreatedAt: mock.TestTime(2004),
 							UpdatedAt: mock.TestTime(2005),
@@ -245,7 +244,7 @@ func TestList(t *testing.T) {
 						Email:      "joanna@mail.com",
 						CompanyID:  1,
 						LocationID: 2,
-						Role: &kuiper.Role{
+						Role: &andro.Role{
 							ID:          2,
 							AccessLevel: 2,
 							Name:        "ADMIN",
@@ -285,7 +284,7 @@ func TestView(t *testing.T) {
 		name       string
 		req        string
 		wantStatus int
-		wantResp   kuiper.User
+		wantResp   andro.User
 		udb        *mockdb.User
 		rbac       *mock.RBAC
 		sec        *mock.Secure
@@ -314,9 +313,9 @@ func TestView(t *testing.T) {
 				},
 			},
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (kuiper.User, error) {
-					return kuiper.User{
-						Base: kuiper.Base{
+				ViewFn: func(db orm.DB, id int) (andro.User, error) {
+					return andro.User{
+						Base: andro.Base{
 							ID:        1,
 							CreatedAt: mock.TestTime(2000),
 							UpdatedAt: mock.TestTime(2000),
@@ -328,8 +327,8 @@ func TestView(t *testing.T) {
 				},
 			},
 			wantStatus: http.StatusOK,
-			wantResp: kuiper.User{
-				Base: kuiper.Base{
+			wantResp: andro.User{
+				Base: andro.Base{
 					ID:        1,
 					CreatedAt: mock.TestTime(2000),
 					UpdatedAt: mock.TestTime(2000),
@@ -355,7 +354,7 @@ func TestView(t *testing.T) {
 			}
 			defer res.Body.Close()
 			if tt.wantResp.ID != 0 {
-				response := new(kuiper.User)
+				response := new(andro.User)
 				if err := json.NewDecoder(res.Body).Decode(response); err != nil {
 					t.Fatal(err)
 				}
@@ -372,7 +371,7 @@ func TestUpdate(t *testing.T) {
 		req        string
 		id         string
 		wantStatus int
-		wantResp   kuiper.User
+		wantResp   andro.User
 		udb        *mockdb.User
 		rbac       *mock.RBAC
 		sec        *mock.Secure
@@ -409,9 +408,9 @@ func TestUpdate(t *testing.T) {
 				},
 			},
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (kuiper.User, error) {
-					return kuiper.User{
-						Base: kuiper.Base{
+				ViewFn: func(db orm.DB, id int) (andro.User, error) {
+					return andro.User{
+						Base: andro.Base{
 							ID:        1,
 							CreatedAt: mock.TestTime(2000),
 							UpdatedAt: mock.TestTime(2000),
@@ -424,15 +423,15 @@ func TestUpdate(t *testing.T) {
 						Mobile:    "991991",
 					}, nil
 				},
-				UpdateFn: func(db orm.DB, usr kuiper.User) error {
+				UpdateFn: func(db orm.DB, usr andro.User) error {
 					usr.UpdatedAt = mock.TestTime(2010)
 					usr.Mobile = "991991"
 					return nil
 				},
 			},
 			wantStatus: http.StatusOK,
-			wantResp: kuiper.User{
-				Base: kuiper.Base{
+			wantResp: andro.User{
+				Base: andro.Base{
 					ID:        1,
 					CreatedAt: mock.TestTime(2000),
 					UpdatedAt: mock.TestTime(2000),
@@ -465,7 +464,7 @@ func TestUpdate(t *testing.T) {
 			}
 			defer res.Body.Close()
 			if tt.wantResp.ID != 0 {
-				response := new(kuiper.User)
+				response := new(andro.User)
 				if err := json.NewDecoder(res.Body).Decode(response); err != nil {
 					t.Fatal(err)
 				}
@@ -494,16 +493,16 @@ func TestDelete(t *testing.T) {
 			name: "Fail on RBAC",
 			id:   `1`,
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (kuiper.User, error) {
-					return kuiper.User{
-						Role: &kuiper.Role{
-							AccessLevel: kuiper.CompanyAdminRole,
+				ViewFn: func(db orm.DB, id int) (andro.User, error) {
+					return andro.User{
+						Role: &andro.Role{
+							AccessLevel: andro.CompanyAdminRole,
 						},
 					}, nil
 				},
 			},
 			rbac: &mock.RBAC{
-				IsLowerRoleFn: func(echo.Context, kuiper.AccessRole) error {
+				IsLowerRoleFn: func(echo.Context, andro.AccessRole) error {
 					return echo.ErrForbidden
 				},
 			},
@@ -513,19 +512,19 @@ func TestDelete(t *testing.T) {
 			name: "Success",
 			id:   `1`,
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (kuiper.User, error) {
-					return kuiper.User{
-						Role: &kuiper.Role{
-							AccessLevel: kuiper.CompanyAdminRole,
+				ViewFn: func(db orm.DB, id int) (andro.User, error) {
+					return andro.User{
+						Role: &andro.Role{
+							AccessLevel: andro.CompanyAdminRole,
 						},
 					}, nil
 				},
-				DeleteFn: func(orm.DB, kuiper.User) error {
+				DeleteFn: func(orm.DB, andro.User) error {
 					return nil
 				},
 			},
 			rbac: &mock.RBAC{
-				IsLowerRoleFn: func(echo.Context, kuiper.AccessRole) error {
+				IsLowerRoleFn: func(echo.Context, andro.AccessRole) error {
 					return nil
 				},
 			},

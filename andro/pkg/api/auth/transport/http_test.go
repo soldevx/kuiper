@@ -9,14 +9,13 @@ import (
 
 	"github.com/labstack/echo"
 
-	kuiper "github.com/soldevx/kuiper/kuipersrv"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/api/auth"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/api/auth/transport"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/jwt"
-	authMw "github.com/soldevx/kuiper/kuipersrv/pkg/utl/middleware/auth"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/mock"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/mock/mockdb"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/server"
+	"github.com/soldevx/kuiper/andro/pkg/api/auth"
+	"github.com/soldevx/kuiper/andro/pkg/api/auth/transport"
+	"github.com/soldevx/kuiper/andro/pkg/utl/jwt"
+	authMw "github.com/soldevx/kuiper/andro/pkg/utl/middleware/auth"
+	"github.com/soldevx/kuiper/andro/pkg/utl/mock"
+	"github.com/soldevx/kuiper/andro/pkg/utl/mock/mockdb"
+	"github.com/soldevx/kuiper/andro/pkg/utl/server"
 
 	"github.com/go-pg/pg/v9/orm"
 	"github.com/stretchr/testify/assert"
@@ -27,7 +26,7 @@ func TestLogin(t *testing.T) {
 		name       string
 		req        string
 		wantStatus int
-		wantResp   *kuiper.AuthToken
+		wantResp   *andro.AuthToken
 		udb        *mockdb.User
 		jwt        *mock.JWT
 		sec        *mock.Secure
@@ -42,8 +41,8 @@ func TestLogin(t *testing.T) {
 			req:        `{"username":"juzernejm","password":"hunter123"}`,
 			wantStatus: http.StatusInternalServerError,
 			udb: &mockdb.User{
-				FindByUsernameFn: func(orm.DB, string) (kuiper.User, error) {
-					return kuiper.User{}, kuiper.ErrGeneric
+				FindByUsernameFn: func(orm.DB, string) (andro.User, error) {
+					return andro.User{}, andro.ErrGeneric
 				},
 			},
 		},
@@ -52,18 +51,18 @@ func TestLogin(t *testing.T) {
 			req:        `{"username":"juzernejm","password":"hunter123"}`,
 			wantStatus: http.StatusOK,
 			udb: &mockdb.User{
-				FindByUsernameFn: func(orm.DB, string) (kuiper.User, error) {
-					return kuiper.User{
+				FindByUsernameFn: func(orm.DB, string) (andro.User, error) {
+					return andro.User{
 						Password: "hunter123",
 						Active:   true,
 					}, nil
 				},
-				UpdateFn: func(db orm.DB, u kuiper.User) error {
+				UpdateFn: func(db orm.DB, u andro.User) error {
 					return nil
 				},
 			},
 			jwt: &mock.JWT{
-				GenerateTokenFn: func(kuiper.User) (string, error) {
+				GenerateTokenFn: func(andro.User) (string, error) {
 					return "jwttokenstring", nil
 				},
 			},
@@ -75,7 +74,7 @@ func TestLogin(t *testing.T) {
 					return "refreshtoken"
 				},
 			},
-			wantResp: &kuiper.AuthToken{Token: "jwttokenstring", RefreshToken: "refreshtoken"},
+			wantResp: &andro.AuthToken{Token: "jwttokenstring", RefreshToken: "refreshtoken"},
 		},
 	}
 
@@ -92,7 +91,7 @@ func TestLogin(t *testing.T) {
 			}
 			defer res.Body.Close()
 			if tt.wantResp != nil {
-				response := new(kuiper.AuthToken)
+				response := new(andro.AuthToken)
 				if err := json.NewDecoder(res.Body).Decode(response); err != nil {
 					t.Fatal(err)
 				}
@@ -109,7 +108,7 @@ func TestRefresh(t *testing.T) {
 		name       string
 		req        string
 		wantStatus int
-		wantResp   *kuiper.RefreshToken
+		wantResp   *andro.RefreshToken
 		udb        *mockdb.User
 		jwt        *mock.JWT
 	}{
@@ -118,8 +117,8 @@ func TestRefresh(t *testing.T) {
 			req:        "refreshtoken",
 			wantStatus: http.StatusInternalServerError,
 			udb: &mockdb.User{
-				FindByTokenFn: func(orm.DB, string) (kuiper.User, error) {
-					return kuiper.User{}, kuiper.ErrGeneric
+				FindByTokenFn: func(orm.DB, string) (andro.User, error) {
+					return andro.User{}, andro.ErrGeneric
 				},
 			},
 		},
@@ -128,19 +127,19 @@ func TestRefresh(t *testing.T) {
 			req:        "refreshtoken",
 			wantStatus: http.StatusOK,
 			udb: &mockdb.User{
-				FindByTokenFn: func(orm.DB, string) (kuiper.User, error) {
-					return kuiper.User{
+				FindByTokenFn: func(orm.DB, string) (andro.User, error) {
+					return andro.User{
 						Username: "johndoe",
 						Active:   true,
 					}, nil
 				},
 			},
 			jwt: &mock.JWT{
-				GenerateTokenFn: func(kuiper.User) (string, error) {
+				GenerateTokenFn: func(andro.User) (string, error) {
 					return "jwttokenstring", nil
 				},
 			},
-			wantResp: &kuiper.RefreshToken{Token: "jwttokenstring"},
+			wantResp: &andro.RefreshToken{Token: "jwttokenstring"},
 		},
 	}
 
@@ -157,7 +156,7 @@ func TestRefresh(t *testing.T) {
 			}
 			defer res.Body.Close()
 			if tt.wantResp != nil {
-				response := new(kuiper.RefreshToken)
+				response := new(andro.RefreshToken)
 				if err := json.NewDecoder(res.Body).Decode(response); err != nil {
 					t.Fatal(err)
 				}
@@ -172,7 +171,7 @@ func TestMe(t *testing.T) {
 	cases := []struct {
 		name       string
 		wantStatus int
-		wantResp   kuiper.User
+		wantResp   andro.User
 		header     string
 		udb        *mockdb.User
 		rbac       *mock.RBAC
@@ -181,13 +180,13 @@ func TestMe(t *testing.T) {
 			name:       "Fail on user view",
 			wantStatus: http.StatusInternalServerError,
 			udb: &mockdb.User{
-				ViewFn: func(orm.DB, int) (kuiper.User, error) {
-					return kuiper.User{}, kuiper.ErrGeneric
+				ViewFn: func(orm.DB, int) (andro.User, error) {
+					return andro.User{}, andro.ErrGeneric
 				},
 			},
 			rbac: &mock.RBAC{
-				UserFn: func(echo.Context) kuiper.AuthUser {
-					return kuiper.AuthUser{ID: 1}
+				UserFn: func(echo.Context) andro.AuthUser {
+					return andro.AuthUser{ID: 1}
 				},
 			},
 			header: mock.HeaderValid(),
@@ -196,9 +195,9 @@ func TestMe(t *testing.T) {
 			name:       "Success",
 			wantStatus: http.StatusOK,
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, i int) (kuiper.User, error) {
-					return kuiper.User{
-						Base: kuiper.Base{
+				ViewFn: func(db orm.DB, i int) (andro.User, error) {
+					return andro.User{
+						Base: andro.Base{
 							ID: i,
 						},
 						CompanyID:  2,
@@ -210,13 +209,13 @@ func TestMe(t *testing.T) {
 				},
 			},
 			rbac: &mock.RBAC{
-				UserFn: func(echo.Context) kuiper.AuthUser {
-					return kuiper.AuthUser{ID: 1}
+				UserFn: func(echo.Context) andro.AuthUser {
+					return andro.AuthUser{ID: 1}
 				},
 			},
 			header: mock.HeaderValid(),
-			wantResp: kuiper.User{
-				Base: kuiper.Base{
+			wantResp: andro.User{
+				Base: andro.Base{
 					ID: 1,
 				},
 				CompanyID:  2,
@@ -252,7 +251,7 @@ func TestMe(t *testing.T) {
 			}
 			defer res.Body.Close()
 			if tt.wantResp.ID != 0 {
-				var response kuiper.User
+				var response andro.User
 				if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
 					t.Fatal(err)
 				}

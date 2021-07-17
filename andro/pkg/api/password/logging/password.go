@@ -5,12 +5,11 @@ import (
 
 	"github.com/labstack/echo"
 
-	kuiper "github.com/soldevx/kuiper/kuipersrv"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/api/password"
+	"github.com/soldevx/kuiper/andro/pkg/api/password"
 )
 
 // New creates new password logging service
-func New(svc password.Service, logger kuiper.Logger) *LogService {
+func New(svc password.Service, logger andro.Logger) *LogService {
 	return &LogService{
 		Service: svc,
 		logger:  logger,
@@ -20,7 +19,7 @@ func New(svc password.Service, logger kuiper.Logger) *LogService {
 // LogService represents password logging service
 type LogService struct {
 	password.Service
-	logger kuiper.Logger
+	logger andro.Logger
 }
 
 const name = "password"

@@ -3,14 +3,13 @@ package password_test
 import (
 	"testing"
 
-	kuiper "github.com/soldevx/kuiper/kuipersrv"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/api/password"
+	"github.com/soldevx/kuiper/andro/pkg/api/password"
 
 	"github.com/go-pg/pg/v9/orm"
 	"github.com/labstack/echo"
 
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/mock"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/mock/mockdb"
+	"github.com/soldevx/kuiper/andro/pkg/utl/mock"
+	"github.com/soldevx/kuiper/andro/pkg/utl/mock/mockdb"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -34,7 +33,7 @@ func TestChange(t *testing.T) {
 			args: args{id: 1},
 			rbac: &mock.RBAC{
 				EnforceUserFn: func(c echo.Context, id int) error {
-					return kuiper.ErrGeneric
+					return andro.ErrGeneric
 				}},
 			wantErr: true,
 		},
@@ -47,11 +46,11 @@ func TestChange(t *testing.T) {
 					return nil
 				}},
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (kuiper.User, error) {
+				ViewFn: func(db orm.DB, id int) (andro.User, error) {
 					if id != 1 {
-						return kuiper.User{}, nil
+						return andro.User{}, nil
 					}
-					return kuiper.User{}, kuiper.ErrGeneric
+					return andro.User{}, andro.ErrGeneric
 				},
 			},
 		},
@@ -64,8 +63,8 @@ func TestChange(t *testing.T) {
 				}},
 			wantErr: true,
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (kuiper.User, error) {
-					return kuiper.User{
+				ViewFn: func(db orm.DB, id int) (andro.User, error) {
+					return andro.User{
 						Password: "HashedPassword",
 					}, nil
 				},
@@ -85,8 +84,8 @@ func TestChange(t *testing.T) {
 				}},
 			wantErr: true,
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (kuiper.User, error) {
-					return kuiper.User{
+				ViewFn: func(db orm.DB, id int) (andro.User, error) {
+					return andro.User{
 						Password: "HashedPassword",
 					}, nil
 				},
@@ -108,12 +107,12 @@ func TestChange(t *testing.T) {
 					return nil
 				}},
 			udb: &mockdb.User{
-				ViewFn: func(db orm.DB, id int) (kuiper.User, error) {
-					return kuiper.User{
+				ViewFn: func(db orm.DB, id int) (andro.User, error) {
+					return andro.User{
 						Password: "$2a$10$udRBroNGBeOYwSWCVzf6Lulg98uAoRCIi4t75VZg84xgw6EJbFNsG",
 					}, nil
 				},
-				UpdateFn: func(orm.DB, kuiper.User) error {
+				UpdateFn: func(orm.DB, andro.User) error {
 					return nil
 				},
 			},

@@ -3,7 +3,7 @@ package server_test
 import (
 	"testing"
 
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/server"
+	"github.com/soldevx/kuiper/andro/pkg/utl/server"
 )
 
 // Improve tests

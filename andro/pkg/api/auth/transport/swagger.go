@@ -1,9 +1,5 @@
 package transport
 
-import (
-	kuiper "github.com/soldevx/kuiper/kuipersrv"
-)
-
 // Login request
 // swagger:parameters login
 type swaggLoginReq struct {
@@ -16,7 +12,7 @@ type swaggLoginReq struct {
 type swaggLoginResp struct {
 	// in:body
 	Body struct {
-		*kuiper.AuthToken
+		*andro.AuthToken
 	}
 }
 
@@ -25,6 +21,6 @@ type swaggLoginResp struct {
 type swaggRefreshResp struct {
 	// in:body
 	Body struct {
-		*kuiper.RefreshToken
+		*andro.RefreshToken
 	}
 }

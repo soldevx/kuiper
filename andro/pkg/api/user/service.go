@@ -5,17 +5,16 @@ import (
 	"github.com/go-pg/pg/v9/orm"
 	"github.com/labstack/echo"
 
-	kuiper "github.com/soldevx/kuiper/kuipersrv"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/api/user/platform/pgsql"
+	"github.com/soldevx/kuiper/andro/pkg/api/user/platform/pgsql"
 )
 
 // Service represents user application interface
 type Service interface {
-	Create(echo.Context, kuiper.User) (kuiper.User, error)
-	List(echo.Context, kuiper.Pagination) ([]kuiper.User, error)
-	View(echo.Context, int) (kuiper.User, error)
+	Create(echo.Context, andro.User) (andro.User, error)
+	List(echo.Context, andro.Pagination) ([]andro.User, error)
+	View(echo.Context, int) (andro.User, error)
 	Delete(echo.Context, int) error
-	Update(echo.Context, Update) (kuiper.User, error)
+	Update(echo.Context, Update) (andro.User, error)
 }
 
 // New creates new user application service
@@ -43,17 +42,17 @@ type Securer interface {
 
 // UDB represents user repository interface
 type UDB interface {
-	Create(orm.DB, kuiper.User) (kuiper.User, error)
-	View(orm.DB, int) (kuiper.User, error)
-	List(orm.DB, *kuiper.ListQuery, kuiper.Pagination) ([]kuiper.User, error)
-	Update(orm.DB, kuiper.User) error
-	Delete(orm.DB, kuiper.User) error
+	Create(orm.DB, andro.User) (andro.User, error)
+	View(orm.DB, int) (andro.User, error)
+	List(orm.DB, *andro.ListQuery, andro.Pagination) ([]andro.User, error)
+	Update(orm.DB, andro.User) error
+	Delete(orm.DB, andro.User) error
 }
 
 // RBAC represents role-based-access-control interface
 type RBAC interface {
-	User(echo.Context) kuiper.AuthUser
+	User(echo.Context) andro.AuthUser
 	EnforceUser(echo.Context, int) error
-	AccountCreate(echo.Context, kuiper.AccessRole, int, int) error
-	IsLowerRole(echo.Context, kuiper.AccessRole) error
+	AccountCreate(echo.Context, andro.AccessRole, int, int) error
+	IsLowerRole(echo.Context, andro.AccessRole) error
 }

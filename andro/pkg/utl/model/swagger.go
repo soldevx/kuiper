@@ -1,4 +1,4 @@
-package kuiper
+package andro
 
 // Success response
 // swagger:response ok

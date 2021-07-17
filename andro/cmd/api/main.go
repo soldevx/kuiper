@@ -3,9 +3,9 @@ package main
 import (
 	"flag"
 
-	"github.com/soldevx/kuiper/kuipersrv/pkg/api"
+	"github.com/soldevx/kuiper/andro/pkg/api"
 
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/config"
+	"github.com/soldevx/kuiper/andro/pkg/utl/config"
 )
 
 func main() {

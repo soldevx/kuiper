@@ -4,8 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	kuiper "github.com/soldevx/kuiper/kuipersrv"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/jwt"
+	"github.com/soldevx/kuiper/andro/pkg/utl/jwt"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -15,7 +14,7 @@ func TestGenerateToken(t *testing.T) {
 		algo         string
 		secret       string
 		minSecretLen int
-		req          kuiper.User
+		req          andro.User
 		wantErr      bool
 		want         string
 	}{
@@ -42,14 +41,14 @@ func TestGenerateToken(t *testing.T) {
 			algo:         "HS256",
 			secret:       "g0r$kt3$t1ng",
 			minSecretLen: 1,
-			req: kuiper.User{
-				Base: kuiper.Base{
+			req: andro.User{
+				Base: andro.Base{
 					ID: 1,
 				},
 				Username: "johndoe",
 				Email:    "johndoe@mail.com",
-				Role: &kuiper.Role{
-					AccessLevel: kuiper.SuperAdminRole,
+				Role: &andro.Role{
+					AccessLevel: andro.SuperAdminRole,
 				},
 				CompanyID:  1,
 				LocationID: 1,

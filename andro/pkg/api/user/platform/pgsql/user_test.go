@@ -6,23 +6,21 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	kuiper "github.com/soldevx/kuiper/kuipersrv"
-
-	"github.com/soldevx/kuiper/kuipersrv/pkg/api/user/platform/pgsql"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/mock"
+	"github.com/soldevx/kuiper/andro/pkg/api/user/platform/pgsql"
+	"github.com/soldevx/kuiper/andro/pkg/utl/mock"
 )
 
 func TestCreate(t *testing.T) {
 	cases := []struct {
 		name     string
 		wantErr  bool
-		req      kuiper.User
-		wantData kuiper.User
+		req      andro.User
+		wantData andro.User
 	}{
 		{
 			name:    "Fail on insert duplicate ID",
 			wantErr: true,
-			req: kuiper.User{
+			req: andro.User{
 				Email:      "tomjones@mail.com",
 				FirstName:  "Tom",
 				LastName:   "Jones",
@@ -31,14 +29,14 @@ func TestCreate(t *testing.T) {
 				CompanyID:  1,
 				LocationID: 1,
 				Password:   "pass",
-				Base: kuiper.Base{
+				Base: andro.Base{
 					ID: 1,
 				},
 			},
 		},
 		{
 			name: "Success",
-			req: kuiper.User{
+			req: andro.User{
 				Email:      "newtomjones@mail.com",
 				FirstName:  "Tom",
 				LastName:   "Jones",
@@ -47,11 +45,11 @@ func TestCreate(t *testing.T) {
 				CompanyID:  1,
 				LocationID: 1,
 				Password:   "pass",
-				Base: kuiper.Base{
+				Base: andro.Base{
 					ID: 2,
 				},
 			},
-			wantData: kuiper.User{
+			wantData: andro.User{
 				Email:      "newtomjones@mail.com",
 				FirstName:  "Tom",
 				LastName:   "Jones",
@@ -60,7 +58,7 @@ func TestCreate(t *testing.T) {
 				CompanyID:  1,
 				LocationID: 1,
 				Password:   "pass",
-				Base: kuiper.Base{
+				Base: andro.Base{
 					ID: 2,
 				},
 			},
@@ -68,7 +66,7 @@ func TestCreate(t *testing.T) {
 		{
 			name:    "User already exists",
 			wantErr: true,
-			req: kuiper.User{
+			req: andro.User{
 				Email:    "newtomjones@mail.com",
 				Username: "newtomjones",
 			},
@@ -78,18 +76,18 @@ func TestCreate(t *testing.T) {
 	dbCon := mock.NewPGContainer(t)
 	defer dbCon.Shutdown()
 
-	db := mock.NewDB(t, dbCon, &kuiper.Role{}, &kuiper.User{})
+	db := mock.NewDB(t, dbCon, &andro.Role{}, &andro.User{})
 
 	err := mock.InsertMultiple(db,
-		&kuiper.Role{
+		&andro.Role{
 			ID:          1,
 			AccessLevel: 1,
 			Name:        "SUPER_ADMIN",
 		},
-		&kuiper.User{
+		&andro.User{
 			Email:    "nottomjones@mail.com",
 			Username: "nottomjones",
-			Base: kuiper.Base{
+			Base: andro.Base{
 				ID: 1,
 			},
 		})
@@ -121,7 +119,7 @@ func TestView(t *testing.T) {
 		name     string
 		wantErr  bool
 		id       int
-		wantData kuiper.User
+		wantData andro.User
 	}{
 		{
 			name:    "User does not exist",
@@ -131,7 +129,7 @@ func TestView(t *testing.T) {
 		{
 			name: "Success",
 			id:   2,
-			wantData: kuiper.User{
+			wantData: andro.User{
 				Email:      "tomjones@mail.com",
 				FirstName:  "Tom",
 				LastName:   "Jones",
@@ -140,10 +138,10 @@ func TestView(t *testing.T) {
 				CompanyID:  1,
 				LocationID: 1,
 				Password:   "newPass",
-				Base: kuiper.Base{
+				Base: andro.Base{
 					ID: 2,
 				},
-				Role: &kuiper.Role{
+				Role: &andro.Role{
 					ID:          1,
 					AccessLevel: 1,
 					Name:        "SUPER_ADMIN",
@@ -155,9 +153,9 @@ func TestView(t *testing.T) {
 	dbCon := mock.NewPGContainer(t)
 	defer dbCon.Shutdown()
 
-	db := mock.NewDB(t, dbCon, &kuiper.Role{}, &kuiper.User{})
+	db := mock.NewDB(t, dbCon, &andro.Role{}, &andro.User{})
 
-	if err := mock.InsertMultiple(db, &kuiper.Role{
+	if err := mock.InsertMultiple(db, &andro.Role{
 		ID:          1,
 		AccessLevel: 1,
 		Name:        "SUPER_ADMIN"}, &cases[1].wantData); err != nil {
@@ -187,13 +185,13 @@ func TestUpdate(t *testing.T) {
 	cases := []struct {
 		name     string
 		wantErr  bool
-		usr      kuiper.User
-		wantData kuiper.User
+		usr      andro.User
+		wantData andro.User
 	}{
 		{
 			name: "Success",
-			usr: kuiper.User{
-				Base: kuiper.Base{
+			usr: andro.User{
+				Base: andro.Base{
 					ID: 2,
 				},
 				FirstName: "Z",
@@ -203,7 +201,7 @@ func TestUpdate(t *testing.T) {
 				Mobile:    "345678",
 				Username:  "newUsername",
 			},
-			wantData: kuiper.User{
+			wantData: andro.User{
 				Email:      "tomjones@mail.com",
 				FirstName:  "Z",
 				LastName:   "Freak",
@@ -215,7 +213,7 @@ func TestUpdate(t *testing.T) {
 				Address:    "Address",
 				Phone:      "123456",
 				Mobile:     "345678",
-				Base: kuiper.Base{
+				Base: andro.Base{
 					ID: 2,
 				},
 			},
@@ -225,9 +223,9 @@ func TestUpdate(t *testing.T) {
 	dbCon := mock.NewPGContainer(t)
 	defer dbCon.Shutdown()
 
-	db := mock.NewDB(t, dbCon, &kuiper.Role{}, &kuiper.User{})
+	db := mock.NewDB(t, dbCon, &andro.Role{}, &andro.User{})
 
-	if err := mock.InsertMultiple(db, &kuiper.Role{
+	if err := mock.InsertMultiple(db, &andro.Role{
 		ID:          1,
 		AccessLevel: 1,
 		Name:        "SUPER_ADMIN"}, &cases[0].usr); err != nil {
@@ -244,8 +242,8 @@ func TestUpdate(t *testing.T) {
 			}
 			assert.Equal(t, tt.wantErr, err != nil)
 			if tt.wantData.ID != 0 {
-				user := kuiper.User{
-					Base: kuiper.Base{
+				user := andro.User{
+					Base: andro.Base{
 						ID: tt.usr.ID,
 					},
 				}
@@ -266,28 +264,28 @@ func TestList(t *testing.T) {
 	cases := []struct {
 		name     string
 		wantErr  bool
-		qp       *kuiper.ListQuery
-		pg       kuiper.Pagination
-		wantData []kuiper.User
+		qp       *andro.ListQuery
+		pg       andro.Pagination
+		wantData []andro.User
 	}{
 		{
 			name:    "Invalid pagination values",
 			wantErr: true,
-			pg: kuiper.Pagination{
+			pg: andro.Pagination{
 				Limit: -100,
 			},
 		},
 		{
 			name: "Success",
-			pg: kuiper.Pagination{
+			pg: andro.Pagination{
 				Limit:  100,
 				Offset: 0,
 			},
-			qp: &kuiper.ListQuery{
+			qp: &andro.ListQuery{
 				ID:    1,
 				Query: "company_id = ?",
 			},
-			wantData: []kuiper.User{
+			wantData: []andro.User{
 				{
 					Email:      "tomjones@mail.com",
 					FirstName:  "Tom",
@@ -297,10 +295,10 @@ func TestList(t *testing.T) {
 					CompanyID:  1,
 					LocationID: 1,
 					Password:   "newPass",
-					Base: kuiper.Base{
+					Base: andro.Base{
 						ID: 2,
 					},
-					Role: &kuiper.Role{
+					Role: &andro.Role{
 						ID:          1,
 						AccessLevel: 1,
 						Name:        "SUPER_ADMIN",
@@ -315,10 +313,10 @@ func TestList(t *testing.T) {
 					CompanyID:  1,
 					LocationID: 1,
 					Password:   "hunter2",
-					Base: kuiper.Base{
+					Base: andro.Base{
 						ID: 1,
 					},
-					Role: &kuiper.Role{
+					Role: &andro.Role{
 						ID:          1,
 						AccessLevel: 1,
 						Name:        "SUPER_ADMIN",
@@ -332,9 +330,9 @@ func TestList(t *testing.T) {
 	dbCon := mock.NewPGContainer(t)
 	defer dbCon.Shutdown()
 
-	db := mock.NewDB(t, dbCon, &kuiper.Role{}, &kuiper.User{})
+	db := mock.NewDB(t, dbCon, &andro.Role{}, &andro.User{})
 
-	if err := mock.InsertMultiple(db, &kuiper.Role{
+	if err := mock.InsertMultiple(db, &andro.Role{
 		ID:          1,
 		AccessLevel: 1,
 		Name:        "SUPER_ADMIN"}, &cases[1].wantData); err != nil {
@@ -362,18 +360,18 @@ func TestDelete(t *testing.T) {
 	cases := []struct {
 		name     string
 		wantErr  bool
-		usr      kuiper.User
-		wantData kuiper.User
+		usr      andro.User
+		wantData andro.User
 	}{
 		{
 			name: "Success",
-			usr: kuiper.User{
-				Base: kuiper.Base{
+			usr: andro.User{
+				Base: andro.Base{
 					ID:        2,
 					DeletedAt: mock.TestTime(2018),
 				},
 			},
-			wantData: kuiper.User{
+			wantData: andro.User{
 				Email:      "tomjones@mail.com",
 				FirstName:  "Tom",
 				LastName:   "Jones",
@@ -382,7 +380,7 @@ func TestDelete(t *testing.T) {
 				CompanyID:  1,
 				LocationID: 1,
 				Password:   "newPass",
-				Base: kuiper.Base{
+				Base: andro.Base{
 					ID: 2,
 				},
 			},
@@ -392,9 +390,9 @@ func TestDelete(t *testing.T) {
 	dbCon := mock.NewPGContainer(t)
 	defer dbCon.Shutdown()
 
-	db := mock.NewDB(t, dbCon, &kuiper.Role{}, &kuiper.User{})
+	db := mock.NewDB(t, dbCon, &andro.Role{}, &andro.User{})
 
-	if err := mock.InsertMultiple(db, &kuiper.Role{
+	if err := mock.InsertMultiple(db, &andro.Role{
 		ID:          1,
 		AccessLevel: 1,
 		Name:        "SUPER_ADMIN"}, &cases[0].wantData); err != nil {

@@ -1,13 +1,11 @@
-package kuiper_test
+package andro_test
 
 import (
 	"testing"
-
-	kuiper "github.com/soldevx/kuiper/kuipersrv"
 )
 
 func TestChangePassword(t *testing.T) {
-	user := &kuiper.User{
+	user := &andro.User{
 		FirstName: "TestGuy",
 	}
 
@@ -25,7 +23,7 @@ func TestChangePassword(t *testing.T) {
 }
 
 func TestUpdateLastLogin(t *testing.T) {
-	user := &kuiper.User{
+	user := &andro.User{
 		FirstName: "TestGuy",
 	}
 

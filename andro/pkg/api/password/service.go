@@ -5,8 +5,7 @@ import (
 	"github.com/go-pg/pg/v9/orm"
 	"github.com/labstack/echo"
 
-	kuiper "github.com/soldevx/kuiper/kuipersrv"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/api/password/platform/pgsql"
+	"github.com/soldevx/kuiper/andro/pkg/api/password/platform/pgsql"
 )
 
 // Service represents password application interface
@@ -39,8 +38,8 @@ type Password struct {
 
 // UserDB represents user repository interface
 type UserDB interface {
-	View(orm.DB, int) (kuiper.User, error)
-	Update(orm.DB, kuiper.User) error
+	View(orm.DB, int) (andro.User, error)
+	Update(orm.DB, andro.User) error
 }
 
 // Securer represents security interface

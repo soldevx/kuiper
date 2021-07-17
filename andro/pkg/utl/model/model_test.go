@@ -1,15 +1,14 @@
-package kuiper_test
+package andro_test
 
 import (
 	"context"
 	"testing"
 
-	kuiper "github.com/soldevx/kuiper/kuipersrv"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/mock"
+	"github.com/soldevx/kuiper/andro/pkg/utl/mock"
 )
 
 func TestBeforeInsert(t *testing.T) {
-	base := &kuiper.Base{
+	base := &andro.Base{
 		ID: 1,
 	}
 	base.BeforeInsert(context.TODO())
@@ -22,7 +21,7 @@ func TestBeforeInsert(t *testing.T) {
 }
 
 func TestBeforeUpdate(t *testing.T) {
-	base := &kuiper.Base{
+	base := &andro.Base{
 		ID:        1,
 		CreatedAt: mock.TestTime(2000),
 	}
@@ -34,7 +33,7 @@ func TestBeforeUpdate(t *testing.T) {
 }
 
 func TestPaginationTransform(t *testing.T) {
-	p := &kuiper.PaginationReq{
+	p := &andro.PaginationReq{
 		Limit: 5000, Page: 5,
 	}
 

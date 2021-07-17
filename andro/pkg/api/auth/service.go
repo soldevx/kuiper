@@ -5,8 +5,7 @@ import (
 	"github.com/go-pg/pg/v9/orm"
 	"github.com/labstack/echo"
 
-	kuiper "github.com/soldevx/kuiper/kuipersrv"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/api/auth/platform/pgsql"
+	"github.com/soldevx/kuiper/andro/pkg/api/auth/platform/pgsql"
 )
 
 // New creates new iam service
@@ -27,9 +26,9 @@ func Initialize(db *pg.DB, j TokenGenerator, sec Securer, rbac RBAC) Auth {
 
 // Service represents auth service interface
 type Service interface {
-	Authenticate(echo.Context, string, string) (kuiper.AuthToken, error)
+	Authenticate(echo.Context, string, string) (andro.AuthToken, error)
 	Refresh(echo.Context, string) (string, error)
-	Me(echo.Context) (kuiper.User, error)
+	Me(echo.Context) (andro.User, error)
 }
 
 // Auth represents auth application service
@@ -43,15 +42,15 @@ type Auth struct {
 
 // UserDB represents user repository interface
 type UserDB interface {
-	View(orm.DB, int) (kuiper.User, error)
-	FindByUsername(orm.DB, string) (kuiper.User, error)
-	FindByToken(orm.DB, string) (kuiper.User, error)
-	Update(orm.DB, kuiper.User) error
+	View(orm.DB, int) (andro.User, error)
+	FindByUsername(orm.DB, string) (andro.User, error)
+	FindByToken(orm.DB, string) (andro.User, error)
+	Update(orm.DB, andro.User) error
 }
 
 // TokenGenerator represents token generator (jwt) interface
 type TokenGenerator interface {
-	GenerateToken(kuiper.User) (string, error)
+	GenerateToken(andro.User) (string, error)
 }
 
 // Securer represents security interface
@@ -62,5 +61,5 @@ type Securer interface {
 
 // RBAC represents role-based-access-control interface
 type RBAC interface {
-	User(echo.Context) kuiper.AuthUser
+	User(echo.Context) andro.AuthUser
 }

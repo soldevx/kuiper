@@ -9,7 +9,7 @@ import (
 
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo/middleware"
-	"github.com/soldevx/kuiper/kuipersrv/pkg/utl/middleware/secure"
+	"github.com/soldevx/kuiper/andro/pkg/utl/middleware/secure"
 
 	"github.com/labstack/echo"
 )
