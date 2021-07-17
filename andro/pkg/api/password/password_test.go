@@ -3,6 +3,8 @@ package password_test
 import (
 	"testing"
 
+	andro "github.com/soldevx/kuiper/andro/pkg/utl/model"
+
 	"github.com/soldevx/kuiper/andro/pkg/api/password"
 
 	"github.com/go-pg/pg/v9/orm"

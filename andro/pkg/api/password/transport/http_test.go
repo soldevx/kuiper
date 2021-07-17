@@ -6,6 +6,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	andro "github.com/soldevx/kuiper/andro/pkg/utl/model"
+
 	"github.com/soldevx/kuiper/andro/pkg/api/password"
 	"github.com/soldevx/kuiper/andro/pkg/api/password/transport"
 

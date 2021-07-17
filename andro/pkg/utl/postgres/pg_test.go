@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"testing"
 
+	andro "github.com/soldevx/kuiper/andro/pkg/utl/model"
+
 	"github.com/stretchr/testify/assert"
 
 	"github.com/soldevx/kuiper/andro/pkg/utl/postgres"

@@ -6,6 +6,8 @@ import (
 	"github.com/go-pg/pg/v9/orm"
 	"github.com/labstack/echo"
 
+	andro "github.com/soldevx/kuiper/andro/pkg/utl/model"
+
 	"github.com/soldevx/kuiper/andro/pkg/api/user"
 	"github.com/soldevx/kuiper/andro/pkg/utl/mock"
 	"github.com/soldevx/kuiper/andro/pkg/utl/mock/mockdb"
