@@ -1,20 +1,23 @@
 # ToDo - check version
 
 services:
-  dbdata:
+  dbdatasrv:
     container_name: dbdata_cnt
     build: ./datasrv
     image: epi_dbdata:latest
     restart: always
     environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: secret
+      DATABASE_HOST: ${DB_HOST} 
+      POSTGRES_DB: ${DB_NAME} 
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
       PGDATA: /var/lib/postgresql/data
     volumes:
     - db-data:/var/lib/postgresql/data
     ports:
-    - "5432:5432"
+    - "5432:${DB_PORT}"
+    networks:
+      - kuipernet
  
   pgadmin:
     container_name: dbadminer_cnt
@@ -22,16 +25,50 @@ services:
     image: epi_dbadminer:latest
     restart: always
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@gmail.com
-      PGADMIN_DEFAULT_PASSWORD: secret
-      PGADMIN_LISTEN_PORT: 81
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASS}
+      PGADMIN_LISTEN_PORT: ${PGADMIN_PORT}
+    depends_on:
+      - dbdatasrv
     ports:
-    - "8081:81"
+    - "8081:${PGADMIN_PORT}"
     volumes:
     - pgadmin-data:/var/lib/pgadmin
     links:
-    - "dbdata:pgsql-server"
+    - "dbdatasrv:pgsql-server"
+    networks:
+      - kuipernet
+ 
+  andro:
+    container_name: andro_cnt
+    build: ./andro
+    image: epi_andro:latest
+    restart: always
+    environment:
+      ANDRO_APP_HOST: ${AN_APP_HOST}
+      ANDRO_DB_HOST: ${AN_DB_HOST}
+      ANDRO_DB_DRIVER: ${AN_DB_DRIVER}
+      ANDRO_DB_NAME: ${AN_DB_NAME}
+      ANDRO_DB_USER: ${AN_DB_USER}
+      ANDRO_DB_PASS: ${AN_DB_PASS}
+      ANDRO_DB_PORT: ${AN_DB_PORT}
+      ANDRO_APP_USER: ${AN_APP_USER}
+      ANDRO_APP_PASS: ${AN_APP_PASS}
+      ANDRO_APP_PORT: ${AN_APP_PORT}
+      ANDRO_API_SECRET: ${AN_API_SECRET}
+    ports:
+    - "8080:${AN_APP_PORT}"
+    depends_on:
+      - dbdatasrv
+    networks:
+      - kuipernet
 
+# Volumes to be created to facilitate data persistance 
 volumes:
   db-data:
   pgadmin-data:
+
+# Networks to be created to facilitate communication between containers
+networks:
+  kuipernet:
+    driver: bridge
