@@ -52,10 +52,11 @@ services:
       ANDRO_DB_USER: ${AN_DB_USER}
       ANDRO_DB_PASS: ${AN_DB_PASS}
       ANDRO_DB_PORT: ${AN_DB_PORT}
+      ANDRO_DB_URL: "postgres://${AN_DB_USER}:${AN_DB_PASS}@${AN_DB_HOST}:${AN_DB_PORT}/${AN_DB_NAME}"
       ANDRO_APP_USER: ${AN_APP_USER}
       ANDRO_APP_PASS: ${AN_APP_PASS}
       ANDRO_APP_PORT: ${AN_APP_PORT}
-      ANDRO_API_SECRET: ${AN_API_SECRET}
+      ANDRO_API_JWT_SECRET: ${AN_API_JWT_SECRET}
     ports:
     - "8080:${AN_APP_PORT}"
     depends_on:

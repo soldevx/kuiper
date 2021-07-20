@@ -33,6 +33,7 @@ package api
 
 import (
 	"crypto/sha1"
+	"fmt"
 	"os"
 
 	"github.com/soldevx/kuiper/andro/pkg/utl/zlog"
@@ -58,14 +59,16 @@ import (
 
 // Start starts the API service
 func Start(cfg *config.Configuration) error {
-	db, err := postgres.New(os.Getenv("DATABASE_URL"), cfg.DB.Timeout, cfg.DB.LogQueries)
+	db, err := postgres.New(os.Getenv("ANDRO_DB_URL"), cfg.DB.Timeout, cfg.DB.LogQueries)
 	if err != nil {
 		return err
 	}
 
+	fmt.Println(db)
+
 	sec := secure.New(cfg.App.MinPasswordStr, sha1.New())
 	rbac := rbac.Service{}
-	jwt, err := jwt.New(cfg.JWT.SigningAlgorithm, os.Getenv("JWT_SECRET"), cfg.JWT.DurationMinutes, cfg.JWT.MinSecretLength)
+	jwt, err := jwt.New(cfg.JWT.SigningAlgorithm, os.Getenv("ANDRO_API_JWT_SECRET"), cfg.JWT.DurationMinutes, cfg.JWT.MinSecretLength)
 	if err != nil {
 		return err
 	}
