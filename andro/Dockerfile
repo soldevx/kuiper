@@ -1,8 +1,8 @@
-FROM golang:1.16.6
+FROM golang:1.16.6-buster
 
 LABEL maintainer="EPI"
 LABEL description="image supporting kuiper-andro api framework"
-LABEL version="0.1"
+LABEL version="1.0"
 
 # Set necessary environmet variables needed for our image
 ENV GO111MODULE=on \
@@ -54,7 +54,10 @@ RUN cp -R /build/assets .
 EXPOSE 8080
 
 # Command to run when starting the container
-CMD ["/dist/migration"]
+CMD ["/dist/api"]
+
+
+
 
 
 

@@ -1,10 +1,11 @@
 # ToDo - check version
+version: '3.8'
 
 services:
   dbdatasrv:
     container_name: dbdata_cnt
     build: ./datasrv
-    image: epi_dbdata:latest
+    image: epi_dbdata:1.0
     restart: always
     environment:
       DATABASE_HOST: ${DB_HOST} 
@@ -22,7 +23,7 @@ services:
   pgadmin:
     container_name: dbadminer_cnt
     build: ./dbadminer
-    image: epi_dbadminer:latest
+    image: epi_dbadminer:1.0
     restart: always
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
@@ -38,11 +39,11 @@ services:
     - "dbdatasrv:pgsql-server"
     networks:
       - kuipernet
- 
+
   andro:
     container_name: andro_cnt
     build: ./andro
-    image: epi_andro:latest
+    image: epi_andro:1.0
     restart: always
     environment:
       ANDRO_APP_HOST: ${AN_APP_HOST}
@@ -52,7 +53,7 @@ services:
       ANDRO_DB_USER: ${AN_DB_USER}
       ANDRO_DB_PASS: ${AN_DB_PASS}
       ANDRO_DB_PORT: ${AN_DB_PORT}
-      ANDRO_DB_URL: "postgres://${AN_DB_USER}:${AN_DB_PASS}@${AN_DB_HOST}:${AN_DB_PORT}/${AN_DB_NAME}"
+      ANDRO_DB_URL: "postgres://${AN_DB_USER}:${AN_DB_PASS}@${AN_DB_HOST}:${AN_DB_PORT}/${AN_DB_NAME}?sslmode=disable"
       ANDRO_APP_USER: ${AN_APP_USER}
       ANDRO_APP_PASS: ${AN_APP_PASS}
       ANDRO_APP_PORT: ${AN_APP_PORT}

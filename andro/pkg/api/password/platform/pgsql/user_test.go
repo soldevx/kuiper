@@ -12,6 +12,7 @@ import (
 )
 
 func TestView(t *testing.T) {
+
 	cases := []struct {
 		name     string
 		wantErr  bool
