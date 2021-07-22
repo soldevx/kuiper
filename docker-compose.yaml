@@ -79,7 +79,7 @@ services:
     image: epi_websrv:1.0
     restart: always
     volumes:
-      - ./quark/dist:/usr/share/nginx/html
+      - ./quark/dist/quark:/usr/share/nginx/html
     ports:
       - "8080:8080"
       - "8443:8443"
